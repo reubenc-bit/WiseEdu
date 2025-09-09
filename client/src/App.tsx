@@ -52,7 +52,7 @@ function RoleDashboard() {
     );
   }
 
-  switch (user.role) {
+  switch (user?.role) {
     case 'teacher':
       return <TeacherDashboard />;
     case 'parent':

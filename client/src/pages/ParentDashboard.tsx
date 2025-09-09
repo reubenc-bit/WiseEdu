@@ -25,7 +25,7 @@ export default function ParentDashboard() {
 
   // Redirect if not a parent
   useEffect(() => {
-    if (user && user.role !== 'parent') {
+    if (user && user?.role !== 'parent') {
       toast({
         title: "Access Denied",
         description: "This dashboard is for parents only.",

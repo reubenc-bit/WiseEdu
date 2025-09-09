@@ -25,7 +25,7 @@ export default function TeacherDashboard() {
 
   // Redirect if not a teacher
   useEffect(() => {
-    if (user && user.role !== 'teacher') {
+    if (user && user?.role !== 'teacher') {
       toast({
         title: "Access Denied",
         description: "This dashboard is for teachers only.",

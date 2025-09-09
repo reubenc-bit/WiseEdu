@@ -30,7 +30,7 @@ export default function AdminDashboard() {
 
   // Redirect if not an admin
   useEffect(() => {
-    if (user && user.role !== 'admin') {
+    if (user && user?.role !== 'admin') {
       toast({
         title: "Access Denied",
         description: "This dashboard is for administrators only.",
