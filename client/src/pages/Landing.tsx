@@ -771,18 +771,39 @@ export default function Landing() {
                   Home
                 </button>
                 <button 
+                  onClick={() => scrollToSection('courses')}
+                  className="block text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="footer-link-courses"
+                >
+                  Courses
+                </button>
+                <button 
+                  onClick={() => scrollToSection('resources')}
+                  className="block text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="footer-link-resources"
+                >
+                  Resources
+                </button>
+                <button 
+                  onClick={() => scrollToSection('teacher-training')}
+                  className="block text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="footer-link-teacher-training"
+                >
+                  Teacher Training
+                </button>
+                <button 
+                  onClick={() => scrollToSection('pricing')}
+                  className="block text-muted-foreground hover:text-primary transition-colors"
+                  data-testid="footer-link-pricing"
+                >
+                  Pricing
+                </button>
+                <button 
                   onClick={() => scrollToSection('about')}
                   className="block text-muted-foreground hover:text-primary transition-colors"
                   data-testid="footer-link-about"
                 >
                   About
-                </button>
-                <button 
-                  onClick={() => scrollToSection('features')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-features"
-                >
-                  Features
                 </button>
               </div>
             </div>
