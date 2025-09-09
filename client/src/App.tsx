@@ -40,16 +40,11 @@ function RoleDashboard({ user }: { user: any }) {
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
 
-  // Show landing page while loading or if not authenticated
-  if (isLoading || !isAuthenticated) {
-    return <Landing />;
-  }
-
   return (
     <Switch>
-      {/* Authenticated users go to their role-based dashboard */}
+      {/* Home route - shows Landing page or role-based dashboard */}
       <Route path="/">
-        <RoleDashboard user={user} />
+        {isLoading || !isAuthenticated ? <Landing /> : <RoleDashboard user={user} />}
       </Route>
 
       {/* Public routes - accessible without authentication */}
@@ -58,8 +53,12 @@ function Router() {
       <Route path="/courses" component={CoursesPage} />
 
       {/* Protected routes - only accessible when authenticated */}
-      <Route path="/dashboard/courses" component={Courses} />
-      <Route path="/coding-hub" component={CodingHub} />
+      <Route path="/dashboard/courses">
+        {isAuthenticated ? <Courses /> : <Landing />}
+      </Route>
+      <Route path="/coding-hub">
+        {isAuthenticated ? <CodingHub /> : <Landing />}
+      </Route>
 
       {/* Fallback to 404 */}
       <Route component={NotFound} />
