@@ -21,40 +21,10 @@ import CodingHub from "@/pages/CodingHub";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Landing />;
-  }
-
   return <>{children}</>;
 }
 
-function RoleDashboard() {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading || !user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
+function RoleDashboard({ user }: { user: any }) {
   switch (user?.role) {
     case 'teacher':
       return <TeacherDashboard />;
@@ -68,13 +38,18 @@ function RoleDashboard() {
 }
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
+
+  // Show landing page while loading or if not authenticated
+  if (isLoading || !isAuthenticated) {
+    return <Landing />;
+  }
 
   return (
     <Switch>
-      {/* Public route - landing page */}
+      {/* Authenticated users go to their role-based dashboard */}
       <Route path="/">
-        {isLoading || !isAuthenticated ? <Landing /> : <RoleDashboard />}
+        <RoleDashboard user={user} />
       </Route>
 
       {/* Public routes - accessible without authentication */}
@@ -83,17 +58,8 @@ function Router() {
       <Route path="/courses" component={CoursesPage} />
 
       {/* Protected routes - only accessible when authenticated */}
-      <Route path="/dashboard/courses">
-        <ProtectedRoute>
-          <Courses />
-        </ProtectedRoute>
-      </Route>
-
-      <Route path="/coding-hub">
-        <ProtectedRoute>
-          <CodingHub />
-        </ProtectedRoute>
-      </Route>
+      <Route path="/dashboard/courses" component={Courses} />
+      <Route path="/coding-hub" component={CodingHub} />
 
       {/* Fallback to 404 */}
       <Route component={NotFound} />
