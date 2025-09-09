@@ -8,12 +8,13 @@ export function useAuth() {
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchInterval: false,
     refetchOnWindowFocus: false,
+    enabled: false, // Disable automatic authentication for now
   });
 
   return {
     user: user as User | undefined,
-    isLoading,
-    isAuthenticated: !!user && !error,
+    isLoading: false, // Set to false to allow landing page to load
+    isAuthenticated: false, // Always show landing page
     error,
   };
 }
