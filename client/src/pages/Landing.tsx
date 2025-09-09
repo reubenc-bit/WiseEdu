@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 export default function Landing() {
-  const { getCurriculumText } = useMarket();
+  const { getCurriculumText, market, getMarketLabel } = useMarket();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -497,20 +497,25 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
-            {/* South Africa Pricing */}
+          <div className="max-w-4xl mx-auto">
+            {/* Country-Specific Pricing */}
             <div>
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-2">South Africa 🇿🇦</h3>
-                <p className="text-muted-foreground">Prices in South African Rand (ZAR)</p>
+                <h3 className="text-2xl font-bold mb-2">{getMarketLabel(market)}</h3>
+                <p className="text-muted-foreground">
+                  {market === 'zimbabwe' ? 'Prices in US Dollars (USD)' : 'Prices in South African Rand (ZAR)'}
+                </p>
               </div>
               
-              <div className="space-y-6">
+              <div className="grid md:grid-cols-3 gap-6">
                 <Card className="feature-card">
                   <CardContent className="p-6">
                     <div className="text-center mb-6">
                       <h4 className="text-xl font-bold mb-2">Individual Student</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">R199<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                      <div className="text-3xl font-bold text-primary mb-2">
+                        {market === 'zimbabwe' ? '$12' : 'R199'}
+                        <span className="text-lg font-normal text-muted-foreground">/month</span>
+                      </div>
                       <p className="text-muted-foreground">Perfect for individual learners</p>
                     </div>
                     <div className="space-y-3">
@@ -531,7 +536,7 @@ export default function Landing() {
                         <span className="text-sm">Email support</span>
                       </div>
                     </div>
-                    <Button className="w-full mt-6" data-testid="button-sa-individual">Choose Plan</Button>
+                    <Button className="w-full mt-6" data-testid={`button-${market}-individual`}>Choose Plan</Button>
                   </CardContent>
                 </Card>
 
@@ -540,7 +545,10 @@ export default function Landing() {
                     <div className="text-center mb-6">
                       <div className="inline-block bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium mb-2">Most Popular</div>
                       <h4 className="text-xl font-bold mb-2">School Package</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">R2,999<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                      <div className="text-3xl font-bold text-primary mb-2">
+                        {market === 'zimbabwe' ? '$179' : 'R2,999'}
+                        <span className="text-lg font-normal text-muted-foreground">/month</span>
+                      </div>
                       <p className="text-muted-foreground">Up to 100 students</p>
                     </div>
                     <div className="space-y-3">
@@ -565,7 +573,7 @@ export default function Landing() {
                         <span className="text-sm">Priority support</span>
                       </div>
                     </div>
-                    <Button className="w-full mt-6" data-testid="button-sa-school">Get Started</Button>
+                    <Button className="w-full mt-6" data-testid={`button-${market}-school`}>Get Started</Button>
                   </CardContent>
                 </Card>
 
@@ -594,109 +602,7 @@ export default function Landing() {
                         <span className="text-sm">Dedicated support manager</span>
                       </div>
                     </div>
-                    <Button variant="outline" className="w-full mt-6" data-testid="button-sa-enterprise">Contact Sales</Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Zimbabwe Pricing */}
-            <div>
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-2">Zimbabwe 🇿🇼</h3>
-                <p className="text-muted-foreground">Prices in US Dollars (USD)</p>
-              </div>
-              
-              <div className="space-y-6">
-                <Card className="feature-card">
-                  <CardContent className="p-6">
-                    <div className="text-center mb-6">
-                      <h4 className="text-xl font-bold mb-2">Individual Student</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">$12<span className="text-lg font-normal text-muted-foreground">/month</span></div>
-                      <p className="text-muted-foreground">Perfect for individual learners</p>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Access to all courses</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Progress tracking</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Certificate of completion</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Email support</span>
-                      </div>
-                    </div>
-                    <Button className="w-full mt-6" data-testid="button-zw-individual">Choose Plan</Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="feature-card border-primary">
-                  <CardContent className="p-6">
-                    <div className="text-center mb-6">
-                      <div className="inline-block bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium mb-2">Most Popular</div>
-                      <h4 className="text-xl font-bold mb-2">School Package</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">$179<span className="text-lg font-normal text-muted-foreground">/month</span></div>
-                      <p className="text-muted-foreground">Up to 100 students</p>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Everything in Individual</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Teacher training included</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Curriculum integration support</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Analytics dashboard</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Priority support</span>
-                      </div>
-                    </div>
-                    <Button className="w-full mt-6" data-testid="button-zw-school">Get Started</Button>
-                  </CardContent>
-                </Card>
-
-                <Card className="feature-card">
-                  <CardContent className="p-6">
-                    <div className="text-center mb-6">
-                      <h4 className="text-xl font-bold mb-2">Enterprise</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">Custom</div>
-                      <p className="text-muted-foreground">For large institutions</p>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Unlimited students</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Custom curriculum development</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">On-site training</span>
-                      </div>
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
-                        <span className="text-sm">Dedicated support manager</span>
-                      </div>
-                    </div>
-                    <Button variant="outline" className="w-full mt-6" data-testid="button-zw-enterprise">Contact Sales</Button>
+                    <Button variant="outline" className="w-full mt-6" data-testid={`button-${market}-enterprise`}>Contact Sales</Button>
                   </CardContent>
                 </Card>
               </div>

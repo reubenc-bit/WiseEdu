@@ -14,6 +14,8 @@ import TeacherDashboard from "@/pages/TeacherDashboard";
 import ParentDashboard from "@/pages/ParentDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Courses from "@/pages/Courses";
+import CoursesPage from "@/pages/CoursesPage";
+import TeacherResources from "@/pages/TeacherResources";
 import CodingHub from "@/pages/CodingHub";
 import NotFound from "@/pages/not-found";
 
@@ -74,8 +76,12 @@ function Router() {
         {isLoading || !isAuthenticated ? <Landing /> : <RoleDashboard />}
       </Route>
 
+      {/* Public routes - accessible without authentication */}
+      <Route path="/teacher-resources" component={TeacherResources} />
+      <Route path="/courses" component={CoursesPage} />
+
       {/* Protected routes - only accessible when authenticated */}
-      <Route path="/courses">
+      <Route path="/dashboard/courses">
         <ProtectedRoute>
           <Courses />
         </ProtectedRoute>

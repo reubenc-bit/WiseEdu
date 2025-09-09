@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link, useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AuthModals } from "./AuthModals";
@@ -8,11 +9,14 @@ import { GraduationCap } from "lucide-react";
 export function PublicHeader() {
   const [showAuthModal, setShowAuthModal] = useState<'login' | 'signup' | null>(null);
   const { market, setMarket, getMarketLabel } = useMarket();
+  const [location] = useLocation();
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  const isActive = (path: string) => location === path;
 
   return (
     <>
@@ -30,26 +34,42 @@ export function PublicHeader() {
             {/* Navigation */}
             <nav className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
+                <Link href="/">
+                  <button 
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive('/') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                    }`}
+                    data-testid="nav-home"
+                  >
+                    Home
+                  </button>
+                </Link>
+                <Link href="/teacher-resources">
+                  <button 
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive('/teacher-resources') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                    }`}
+                    data-testid="nav-teacher-resources"
+                  >
+                    Teacher Resources
+                  </button>
+                </Link>
+                <Link href="/courses">
+                  <button 
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive('/courses') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                    }`}
+                    data-testid="nav-courses"
+                  >
+                    Courses
+                  </button>
+                </Link>
                 <button 
-                  onClick={() => scrollToSection('home')}
-                  className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  data-testid="nav-home"
-                >
-                  Home
-                </button>
-                <button 
-                  onClick={() => scrollToSection('about')}
+                  onClick={() => scrollToSection('pricing')}
                   className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  data-testid="nav-about"
+                  data-testid="nav-pricing"
                 >
-                  About
-                </button>
-                <button 
-                  onClick={() => scrollToSection('features')}
-                  className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  data-testid="nav-features"
-                >
-                  Features
+                  Pricing
                 </button>
                 <button 
                   onClick={() => scrollToSection('contact')}
