@@ -70,25 +70,6 @@ export default function Landing() {
               </Button>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent" data-testid="stat-schools">300+</div>
-                <div className="text-primary-foreground/70">Partner Schools</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent" data-testid="stat-students">150K+</div>
-                <div className="text-primary-foreground/70">Students Reached</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent" data-testid="stat-teachers">1.5K+</div>
-                <div className="text-primary-foreground/70">Teachers Trained</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-accent" data-testid="stat-countries">10</div>
-                <div className="text-primary-foreground/70">Countries</div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -214,18 +195,266 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Courses Section */}
+      <section id="courses" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Choose Your Learning Path!</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Whether you're just starting out or ready for advanced challenges, we have the perfect learning journey for you
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Young Coders */}
+            <Card className="feature-card text-center p-8" data-testid="course-young-coders">
+              <CardContent className="p-0">
+                <div className="text-6xl mb-4">🧒</div>
+                <h3 className="text-2xl font-bold mb-2">Young Coders</h3>
+                <p className="text-lg text-muted-foreground mb-4">Ages 6-11</p>
+                <p className="text-lg mb-6">Start your coding adventure with colorful blocks and friendly characters!</p>
+                
+                <div className="space-y-3 mb-8 text-left">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Visual block-based programming</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Fun games and animations</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Simple robotics with micro:bit</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Progress badges and rewards</span>
+                  </div>
+                </div>
+
+                <Button className="w-full" data-testid="button-start-young-coders">
+                  Start Young Coder Journey
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Teen Coders */}
+            <Card className="feature-card text-center p-8" data-testid="course-teen-coders">
+              <CardContent className="p-0">
+                <div className="text-6xl mb-4">👨‍💻</div>
+                <h3 className="text-2xl font-bold mb-2">Teen Coders</h3>
+                <p className="text-lg text-muted-foreground mb-4">Ages 12-17</p>
+                <p className="text-lg mb-6">Master real programming languages and build professional projects!</p>
+                
+                <div className="space-y-3 mb-8 text-left">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Python, JavaScript & HTML/CSS</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Web development projects</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>Advanced robotics & IoT</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-accent mr-3" />
+                    <span>AI & machine learning basics</span>
+                  </div>
+                </div>
+
+                <Button className="w-full" data-testid="button-start-teen-coders">
+                  Start Teen Coder Journey
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Course Videos */}
+          <div className="mt-20">
+            <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">Course Preview Videos</h3>
+            <div className="grid md:grid-cols-3 gap-8">
+              <VideoPlayer
+                title="Young Coders in Action"
+                description="Watch kids create their first animations and games"
+                duration="1 min demo"
+                data-testid="video-young-coders"
+              />
+              
+              <VideoPlayer
+                title="Teen Programming Projects"
+                description="See teenagers building real websites and apps"
+                duration="1 min showcase"
+                data-testid="video-teen-projects"
+              />
+              
+              <VideoPlayer
+                title="Robotics & AI Learning"
+                description="Discover our hands-on robotics curriculum"
+                duration="45 sec overview"
+                data-testid="video-robotics-ai"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Resources Section */}
+      <section id="resources" className="py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Learning Resources</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Everything you need to succeed in coding and robotics education
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="feature-card" data-testid="resource-curriculum">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <BookOpen className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Curriculum Guides</h3>
+                <p className="text-muted-foreground mb-4">
+                  Comprehensive lesson plans and activities aligned with educational standards.
+                </p>
+                <Button variant="outline" size="sm">Download Guides</Button>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card" data-testid="resource-tutorials">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Play className="w-6 h-6 text-secondary" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Video Tutorials</h3>
+                <p className="text-muted-foreground mb-4">
+                  Step-by-step video guides for teachers and students.
+                </p>
+                <Button variant="outline" size="sm">Watch Videos</Button>
+              </CardContent>
+            </Card>
+
+            <Card className="feature-card" data-testid="resource-assessment">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
+                  <Trophy className="w-6 h-6 text-accent" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3">Assessment Tools</h3>
+                <p className="text-muted-foreground mb-4">
+                  Ready-to-use assessments and rubrics for student evaluation.
+                </p>
+                <Button variant="outline" size="sm">Get Tools</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Teacher Training Section */}
+      <section id="teacher-training" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Teacher Training & Certification</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Professional development programs for educators at all levels
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-2xl font-bold mb-6">Transform Your Teaching</h3>
+              <div className="space-y-6">
+                <div className="flex items-start">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-4 mt-1">
+                    <Users className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Professional Certification</h4>
+                    <p className="text-muted-foreground">
+                      Become a certified coding and robotics educator with our comprehensive training program.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center mr-4 mt-1">
+                    <Presentation className="w-4 h-4 text-secondary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Curriculum Integration</h4>
+                    <p className="text-muted-foreground">
+                      Learn how to seamlessly integrate coding and robotics into your existing curriculum.
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center mr-4 mt-1">
+                    <Award className="w-4 h-4 text-accent" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-2">Ongoing Support</h4>
+                    <p className="text-muted-foreground">
+                      Access to our community of educators and continuous professional development resources.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8">
+                <Button size="lg" className="mr-4" data-testid="button-teacher-training">
+                  Join Training Program
+                </Button>
+                <Button variant="outline" size="lg" data-testid="button-schedule-demo">
+                  Schedule Demo
+                </Button>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="bg-card rounded-xl p-8 shadow-lg">
+                <h4 className="text-lg font-semibold mb-4">Training Stats</h4>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <div className="text-3xl font-bold text-primary">1,500+</div>
+                    <div className="text-sm text-muted-foreground">Teachers Trained</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-secondary">300+</div>
+                    <div className="text-sm text-muted-foreground">Partner Schools</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-accent">95%</div>
+                    <div className="text-sm text-muted-foreground">Satisfaction Rate</div>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold text-primary">24/7</div>
+                    <div className="text-sm text-muted-foreground">Support</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* About Section */}
-      <section id="about" className="py-20 bg-muted/30">
+      <section id="about" className="py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Expanding Access to Computer Science Education
+                Expanding Access to Coding and Robotics Education
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                CodewiseHub is dedicated to ensuring every student has the opportunity to learn computer science 
+                CodewiseHub is dedicated to ensuring every student has the opportunity to learn coding and robotics 
                 and artificial intelligence. We create engaging, age-appropriate curriculum and provide comprehensive 
-                teacher training to bring quality CS education to schools across Africa.
+                teacher training to bring quality coding and robotics education to schools across Africa.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center">
@@ -248,12 +477,243 @@ export default function Landing() {
             </div>
             <div className="text-center">
               <img 
-                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80" 
-                alt="Students using tablets and computers in a modern classroom" 
+                src="@assets/generated_images/coding_and_robotics_education_5018cb03.png" 
+                alt="Students learning coding and robotics in an interactive classroom" 
                 className="rounded-xl shadow-2xl w-full h-auto"
                 data-testid="img-classroom"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Choose Your Plan</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Flexible pricing options for individuals, schools, and institutions in South Africa and Zimbabwe
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* South Africa Pricing */}
+            <div>
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-2">South Africa 🇿🇦</h3>
+                <p className="text-muted-foreground">Prices in South African Rand (ZAR)</p>
+              </div>
+              
+              <div className="space-y-6">
+                <Card className="feature-card">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h4 className="text-xl font-bold mb-2">Individual Student</h4>
+                      <div className="text-3xl font-bold text-primary mb-2">R199<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                      <p className="text-muted-foreground">Perfect for individual learners</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Access to all courses</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Progress tracking</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Certificate of completion</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Email support</span>
+                      </div>
+                    </div>
+                    <Button className="w-full mt-6" data-testid="button-sa-individual">Choose Plan</Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="feature-card border-primary">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <div className="inline-block bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium mb-2">Most Popular</div>
+                      <h4 className="text-xl font-bold mb-2">School Package</h4>
+                      <div className="text-3xl font-bold text-primary mb-2">R2,999<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                      <p className="text-muted-foreground">Up to 100 students</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Everything in Individual</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Teacher training included</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Curriculum integration support</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Analytics dashboard</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Priority support</span>
+                      </div>
+                    </div>
+                    <Button className="w-full mt-6" data-testid="button-sa-school">Get Started</Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="feature-card">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h4 className="text-xl font-bold mb-2">Enterprise</h4>
+                      <div className="text-3xl font-bold text-primary mb-2">Custom</div>
+                      <p className="text-muted-foreground">For large institutions</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Unlimited students</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Custom curriculum development</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">On-site training</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Dedicated support manager</span>
+                      </div>
+                    </div>
+                    <Button variant="outline" className="w-full mt-6" data-testid="button-sa-enterprise">Contact Sales</Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Zimbabwe Pricing */}
+            <div>
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold mb-2">Zimbabwe 🇿🇼</h3>
+                <p className="text-muted-foreground">Prices in US Dollars (USD)</p>
+              </div>
+              
+              <div className="space-y-6">
+                <Card className="feature-card">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h4 className="text-xl font-bold mb-2">Individual Student</h4>
+                      <div className="text-3xl font-bold text-primary mb-2">$12<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                      <p className="text-muted-foreground">Perfect for individual learners</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Access to all courses</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Progress tracking</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Certificate of completion</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Email support</span>
+                      </div>
+                    </div>
+                    <Button className="w-full mt-6" data-testid="button-zw-individual">Choose Plan</Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="feature-card border-primary">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <div className="inline-block bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium mb-2">Most Popular</div>
+                      <h4 className="text-xl font-bold mb-2">School Package</h4>
+                      <div className="text-3xl font-bold text-primary mb-2">$179<span className="text-lg font-normal text-muted-foreground">/month</span></div>
+                      <p className="text-muted-foreground">Up to 100 students</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Everything in Individual</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Teacher training included</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Curriculum integration support</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Analytics dashboard</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Priority support</span>
+                      </div>
+                    </div>
+                    <Button className="w-full mt-6" data-testid="button-zw-school">Get Started</Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="feature-card">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-6">
+                      <h4 className="text-xl font-bold mb-2">Enterprise</h4>
+                      <div className="text-3xl font-bold text-primary mb-2">Custom</div>
+                      <p className="text-muted-foreground">For large institutions</p>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Unlimited students</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Custom curriculum development</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">On-site training</span>
+                      </div>
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-accent mr-3" />
+                        <span className="text-sm">Dedicated support manager</span>
+                      </div>
+                    </div>
+                    <Button variant="outline" className="w-full mt-6" data-testid="button-zw-enterprise">Contact Sales</Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <p className="text-muted-foreground mb-4">
+              <CheckCircle className="w-4 h-4 text-accent inline mr-2" />
+              Free curriculum consultation
+              <span className="mx-4">•</span>
+              <CheckCircle className="w-4 h-4 text-accent inline mr-2" />
+              30-day money-back guarantee
+              <span className="mx-4">•</span>
+              <CheckCircle className="w-4 h-4 text-accent inline mr-2" />
+              Ongoing implementation support
+            </p>
           </div>
         </div>
       </section>
@@ -296,7 +756,7 @@ export default function Landing() {
                 CodewiseHub
               </h3>
               <p className="text-muted-foreground mb-4">
-                Empowering the next generation of innovators through comprehensive computer science education.
+                Empowering the next generation of innovators through comprehensive coding and robotics education.
               </p>
             </div>
             
