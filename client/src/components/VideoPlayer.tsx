@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
 interface VideoPlayerProps {
   title: string;
@@ -10,6 +10,7 @@ interface VideoPlayerProps {
   videoUrl?: string;
   thumbnailUrl?: string;
   className?: string;
+  "data-testid"?: string;
 }
 
 export function VideoPlayer({ 
@@ -18,21 +19,51 @@ export function VideoPlayer({
   duration, 
   videoUrl, 
   thumbnailUrl,
-  className = "" 
+  className = "",
+  "data-testid": testId
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const handlePlay = () => {
-    if (videoUrl) {
-      // TODO: Implement actual video playback
+    if (videoUrl && videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    } else {
+      // Show demo video player for videos without URL
+      setShowVideo(true);
       setIsPlaying(!isPlaying);
     }
   };
 
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+    }
+    setIsMuted(!isMuted);
+  };
+
   return (
-    <Card className={`feature-card ${className}`} data-testid="video-player">
+    <Card className={`feature-card hover-elevate ${className}`} data-testid={testId}>
       <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center relative overflow-hidden rounded-t-lg">
-        {thumbnailUrl ? (
+        {/* Show actual video if URL provided and video is playing */}
+        {videoUrl && showVideo ? (
+          <video 
+            ref={videoRef}
+            src={videoUrl}
+            className="w-full h-full object-cover"
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            controls={false}
+            muted={isMuted}
+          />
+        ) : thumbnailUrl ? (
           <img 
             src={thumbnailUrl} 
             alt={title}
@@ -40,35 +71,74 @@ export function VideoPlayer({
           />
         ) : (
           <div className="text-center">
+            <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-2">
+              <Play className="w-10 h-10 text-white" />
+            </div>
+            <p className="text-white/80 text-sm">Click to Watch</p>
+          </div>
+        )}
+        
+        {/* Video Controls Overlay */}
+        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
               size="icon" 
-              className="w-16 h-16 rounded-full bg-primary/20 hover:bg-primary/30"
+              className="w-12 h-12 rounded-full bg-white/20 hover:bg-white/30 text-white"
               onClick={handlePlay}
               data-testid="button-play-video"
             >
               {isPlaying ? (
-                <Pause className="w-8 h-8 text-primary" />
+                <Pause className="w-6 h-6" />
               ) : (
-                <Play className="w-8 h-8 text-primary" />
+                <Play className="w-6 h-6" />
               )}
             </Button>
+            
+            {videoUrl && (
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white"
+                onClick={toggleMute}
+                data-testid="button-mute-video"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-4 h-4" />
+                ) : (
+                  <Volume2 className="w-4 h-4" />
+                )}
+              </Button>
+            )}
           </div>
-        )}
+        </div>
         
         {/* Duration Badge */}
-        <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium">
+        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded text-xs font-medium">
           {duration}
         </div>
+        
+        {/* Live indicator for demo videos */}
+        {!videoUrl && (
+          <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
+            DEMO
+          </div>
+        )}
       </div>
       
       <CardContent className="p-6">
         <h3 className="text-xl font-semibold mb-2" data-testid="text-video-title">
           {title}
         </h3>
-        <p className="text-muted-foreground" data-testid="text-video-description">
+        <p className="text-muted-foreground mb-4" data-testid="text-video-description">
           {description}
         </p>
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Duration: {duration}</span>
+          {!videoUrl && (
+            <span className="text-xs bg-muted px-2 py-1 rounded">Tutorial Coming Soon</span>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

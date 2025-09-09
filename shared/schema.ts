@@ -16,7 +16,7 @@ import { z } from "zod";
 
 // Enums
 export const userRoleEnum = pgEnum('user_role', ['student', 'teacher', 'parent', 'admin']);
-export const marketEnum = pgEnum('market', ['south_africa', 'zimbabwe']);
+export const marketEnum = pgEnum('market', ['south-africa', 'zimbabwe']);
 export const contentTypeEnum = pgEnum('content_type', ['lesson', 'project', 'assessment', 'video']);
 export const difficultyEnum = pgEnum('difficulty', ['beginner', 'intermediate', 'advanced']);
 
@@ -39,7 +39,7 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   role: userRoleEnum("role").notNull().default('student'),
-  market: marketEnum("market").notNull().default('south_africa'),
+  market: marketEnum("market").notNull().default('south-africa'),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
