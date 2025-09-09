@@ -300,29 +300,17 @@ export default function CoursesPage() {
               <div className="space-y-6">
                 <div className="border-l-4 border-primary pl-6">
                   <h4 className="font-semibold mb-2">Module 1: Visual Programming Basics</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Learn programming concepts through drag-and-drop blocks ({gradingText.youngCoders})</p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>4 weeks</span>
-                  </div>
+                  <p className="text-muted-foreground text-sm">Learn programming concepts through drag-and-drop blocks ({gradingText.youngCoders})</p>
                 </div>
                 
                 <div className="border-l-4 border-secondary pl-6">
                   <h4 className="font-semibold mb-2">Module 2: Animation & Games</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Create interactive stories and simple games</p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>6 weeks</span>
-                  </div>
+                  <p className="text-muted-foreground text-sm">Create interactive stories and simple games</p>
                 </div>
                 
                 <div className="border-l-4 border-accent pl-6">
                   <h4 className="font-semibold mb-2">Module 3: Introduction to Robotics</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Control LEDs and sensors with micro:bit</p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>6 weeks</span>
-                  </div>
+                  <p className="text-muted-foreground text-sm">Control LEDs and sensors with micro:bit</p>
                 </div>
               </div>
             </div>
@@ -339,20 +327,12 @@ export default function CoursesPage() {
               <div className="space-y-6">
                 <div className="border-l-4 border-primary pl-6">
                   <h4 className="font-semibold mb-2">Module 1: Python Programming</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Master Python fundamentals and data structures ({gradingText.teenCoders})</p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>8 weeks</span>
-                  </div>
+                  <p className="text-muted-foreground text-sm">Master Python fundamentals and data structures ({gradingText.teenCoders})</p>
                 </div>
                 
                 <div className="border-l-4 border-secondary pl-6">
                   <h4 className="font-semibold mb-2">Module 2: Web Development</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Build websites with HTML, CSS, and JavaScript</p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>10 weeks</span>
-                  </div>
+                  <p className="text-muted-foreground text-sm">Build websites with HTML, CSS, and JavaScript</p>
                 </div>
                 
                 <div className="border-l-4 border-accent pl-6">

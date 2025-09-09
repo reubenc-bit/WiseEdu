@@ -166,7 +166,7 @@ export default function TeacherResources() {
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center text-sm">
                     <CheckCircle className="w-4 h-4 text-accent mr-2" />
-                    <span>K-12 Grade levels</span>
+                    <span>All grade levels</span>
                   </div>
                   <div className="flex items-center text-sm">
                     <CheckCircle className="w-4 h-4 text-accent mr-2" />

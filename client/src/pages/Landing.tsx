@@ -459,7 +459,7 @@ export default function Landing() {
               <div className="space-y-4">
                 <div className="flex items-center">
                   <CheckCircle className="w-5 h-5 text-accent mr-3" />
-                  <span>Standards-aligned curriculum for grades K-12</span>
+                  <span>Standards-aligned curriculum for all grade levels</span>
                 </div>
                 <div className="flex items-center">
                   <CheckCircle className="w-5 h-5 text-accent mr-3" />
