@@ -10,12 +10,13 @@ import {
   boolean,
   pgEnum,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Enums
 export const userRoleEnum = pgEnum('user_role', ['student', 'teacher', 'parent', 'admin']);
-export const marketEnum = pgEnum('market', ['south-africa', 'zimbabwe']);
+export const marketEnum = pgEnum('market', ['south_africa', 'zimbabwe']);
 export const contentTypeEnum = pgEnum('content_type', ['lesson', 'project', 'assessment', 'video']);
 export const difficultyEnum = pgEnum('difficulty', ['beginner', 'intermediate', 'advanced']);
 
@@ -38,7 +39,7 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   role: userRoleEnum("role").notNull().default('student'),
-  market: marketEnum("market").notNull().default('south-africa'),
+  market: marketEnum("market").notNull().default('south_africa'),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -187,3 +188,103 @@ export type Project = typeof projects.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;
 export type UserAchievement = typeof userAchievements.$inferSelect;
 export type TeacherCertification = typeof teacherCertifications.$inferSelect;
+
+// Define relations
+export const userRelations = relations(users, ({ many }) => ({
+  progress: many(userProgress),
+  projects: many(projects),
+  achievements: many(userAchievements),
+  teacherCertifications: many(teacherCertifications),
+  teachingEnrollments: many(classEnrollments, { relationName: "teacher" }),
+  studentEnrollments: many(classEnrollments, { relationName: "student" }),
+  parentRelationships: many(parentChildRelationships, { relationName: "parent" }),
+  childRelationships: many(parentChildRelationships, { relationName: "child" }),
+}));
+
+export const courseRelations = relations(courses, ({ many }) => ({
+  lessons: many(lessons),
+  userProgress: many(userProgress),
+  classEnrollments: many(classEnrollments),
+}));
+
+export const lessonRelations = relations(lessons, ({ one, many }) => ({
+  course: one(courses, {
+    fields: [lessons.courseId],
+    references: [courses.id],
+  }),
+  userProgress: many(userProgress),
+}));
+
+export const userProgressRelations = relations(userProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [userProgress.userId],
+    references: [users.id],
+  }),
+  course: one(courses, {
+    fields: [userProgress.courseId],
+    references: [courses.id],
+  }),
+  lesson: one(lessons, {
+    fields: [userProgress.lessonId],
+    references: [lessons.id],
+  }),
+}));
+
+export const projectRelations = relations(projects, ({ one }) => ({
+  user: one(users, {
+    fields: [projects.userId],
+    references: [users.id],
+  }),
+}));
+
+export const achievementRelations = relations(achievements, ({ many }) => ({
+  userAchievements: many(userAchievements),
+}));
+
+export const userAchievementRelations = relations(userAchievements, ({ one }) => ({
+  user: one(users, {
+    fields: [userAchievements.userId],
+    references: [users.id],
+  }),
+  achievement: one(achievements, {
+    fields: [userAchievements.achievementId],
+    references: [achievements.id],
+  }),
+}));
+
+export const teacherCertificationRelations = relations(teacherCertifications, ({ one }) => ({
+  teacher: one(users, {
+    fields: [teacherCertifications.teacherId],
+    references: [users.id],
+  }),
+}));
+
+export const classEnrollmentRelations = relations(classEnrollments, ({ one }) => ({
+  teacher: one(users, {
+    fields: [classEnrollments.teacherId],
+    references: [users.id],
+    relationName: "teacher",
+  }),
+  student: one(users, {
+    fields: [classEnrollments.studentId],
+    references: [users.id],
+    relationName: "student",
+  }),
+  course: one(courses, {
+    fields: [classEnrollments.courseId],
+    references: [courses.id],
+  }),
+}));
+
+export const parentChildRelationshipRelations = relations(parentChildRelationships, ({ one }) => ({
+  parent: one(users, {
+    fields: [parentChildRelationships.parentId],
+    references: [users.id],
+    relationName: "parent",
+  }),
+  child: one(users, {
+    fields: [parentChildRelationships.childId],
+    references: [users.id],
+    relationName: "child",
+  }),
+}));
