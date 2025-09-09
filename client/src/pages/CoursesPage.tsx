@@ -337,11 +337,7 @@ export default function CoursesPage() {
                 
                 <div className="border-l-4 border-accent pl-6">
                   <h4 className="font-semibold mb-2">Module 3: Advanced Robotics & AI</h4>
-                  <p className="text-muted-foreground text-sm mb-2">IoT projects and machine learning basics</p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    <span>12 weeks</span>
-                  </div>
+                  <p className="text-muted-foreground text-sm">IoT projects and machine learning basics</p>
                 </div>
               </div>
             </div>
