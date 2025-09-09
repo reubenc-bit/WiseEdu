@@ -493,7 +493,7 @@ export default function Landing() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Choose Your Plan</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Flexible pricing options for individuals, schools, and institutions in South Africa and Zimbabwe
+              Flexible pricing options for individuals, schools, and institutions
             </p>
           </div>
 
