@@ -11,8 +11,28 @@ import {
   Code,
   Bot
 } from "lucide-react";
+import { useMarket } from "@/contexts/MarketContext";
 
 export default function CoursesPage() {
+  const { market } = useMarket();
+
+  const getGradingText = () => {
+    if (market === 'zimbabwe') {
+      return {
+        youngCoders: "ECD A & B - Grade 7",
+        teenCoders: "Form 1-6",
+        system: "Zimbabwean education system"
+      };
+    } else {
+      return {
+        youngCoders: "Grade R - Grade 6", 
+        teenCoders: "Grade 7 - Grade 12",
+        system: "South African education system"
+      };
+    }
+  };
+
+  const gradingText = getGradingText();
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
@@ -173,36 +193,85 @@ export default function CoursesPage() {
         </div>
       </section>
 
-      {/* Course Preview Videos */}
-      <section id="course-videos" className="py-20 bg-muted/30">
+      {/* Young Coders Video Tutorials */}
+      <section id="young-coders-videos" className="py-20 bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Course Preview Videos</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Young Coders Learning Videos</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              See our courses in action and discover what makes CodewiseHub special
+              Short tutorial videos to help young learners get started with coding
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <VideoPlayer
-              title="Young Coders in Action"
-              description="Watch kids create their first animations and games"
-              duration="1 min demo"
-              data-testid="video-young-coders"
+              title="Scratch Programming Basics"
+              description="Learn how to create your first program using colorful blocks"
+              duration="45 sec"
+              data-testid="video-scratch-programming"
             />
             
             <VideoPlayer
-              title="Teen Programming Projects"
-              description="See teenagers building real websites and apps"
-              duration="1 min showcase"
-              data-testid="video-teen-projects"
+              title="Advanced Robotics Fun"
+              description="Control robots and make them dance with simple commands"
+              duration="1 min"
+              data-testid="video-advanced-robotics"
             />
             
             <VideoPlayer
-              title="Robotics & AI Learning"
-              description="Discover our hands-on robotics curriculum"
-              duration="45 sec overview"
-              data-testid="video-robotics-ai"
+              title="Connect Your Device"
+              description="Learn how to connect micro:bit and other devices"
+              duration="50 sec"
+              data-testid="video-connect-device"
+            />
+
+            <VideoPlayer
+              title="Coding Environment Tour"
+              description="Get familiar with your coding workspace and tools"
+              duration="55 sec"
+              data-testid="video-coding-environment"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Teen Coders Video Tutorials */}
+      <section id="teen-coders-videos" className="py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Teen Coders Learning Videos</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Professional programming tutorials for advanced learners
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <VideoPlayer
+              title="Python Programming Intro"
+              description="Master Python fundamentals and write your first program"
+              duration="1 min"
+              data-testid="video-python-programming"
+            />
+            
+            <VideoPlayer
+              title="Web Development Basics"
+              description="Build your first website with HTML, CSS, and JavaScript"
+              duration="58 sec"
+              data-testid="video-web-development"
+            />
+            
+            <VideoPlayer
+              title="Professional IDE Setup"
+              description="Learn to use professional development environments"
+              duration="52 sec"
+              data-testid="video-professional-ide"
+            />
+
+            <VideoPlayer
+              title="AI & Prompt Engineering"
+              description="Introduction to artificial intelligence and prompt writing"
+              duration="1 min"
+              data-testid="video-ai-prompt-engineering"
             />
           </div>
         </div>
@@ -214,7 +283,7 @@ export default function CoursesPage() {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">What You'll Learn</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Comprehensive curriculum designed to take students from beginners to confident coders
+              Comprehensive curriculum aligned with {gradingText.system} standards
             </p>
           </div>
 
@@ -231,7 +300,7 @@ export default function CoursesPage() {
               <div className="space-y-6">
                 <div className="border-l-4 border-primary pl-6">
                   <h4 className="font-semibold mb-2">Module 1: Visual Programming Basics</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Learn programming concepts through drag-and-drop blocks</p>
+                  <p className="text-muted-foreground text-sm mb-2">Learn programming concepts through drag-and-drop blocks ({gradingText.youngCoders})</p>
                   <div className="flex items-center text-xs text-muted-foreground">
                     <Clock className="w-3 h-3 mr-1" />
                     <span>4 weeks</span>
@@ -270,7 +339,7 @@ export default function CoursesPage() {
               <div className="space-y-6">
                 <div className="border-l-4 border-primary pl-6">
                   <h4 className="font-semibold mb-2">Module 1: Python Programming</h4>
-                  <p className="text-muted-foreground text-sm mb-2">Master Python fundamentals and data structures</p>
+                  <p className="text-muted-foreground text-sm mb-2">Master Python fundamentals and data structures ({gradingText.teenCoders})</p>
                   <div className="flex items-center text-xs text-muted-foreground">
                     <Clock className="w-3 h-3 mr-1" />
                     <span>8 weeks</span>
