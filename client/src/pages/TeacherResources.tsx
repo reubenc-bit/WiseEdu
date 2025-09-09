@@ -102,8 +102,16 @@ export default function TeacherResources() {
                 <Button size="lg" className="mr-4" data-testid="button-start-certification">
                   Start Certification
                 </Button>
-                <Button variant="outline" size="lg" data-testid="button-learn-more">
+                <Button variant="outline" size="lg" className="mr-4" data-testid="button-learn-more">
                   Learn More
+                </Button>
+                <Button 
+                  size="lg" 
+                  className="bg-secondary hover:bg-secondary/90"
+                  onClick={() => window.location.href = '/professional-development'}
+                  data-testid="button-professional-development"
+                >
+                  Professional Development Programs
                 </Button>
               </div>
             </div>

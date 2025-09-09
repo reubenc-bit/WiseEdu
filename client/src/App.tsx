@@ -16,6 +16,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import Courses from "@/pages/Courses";
 import CoursesPage from "@/pages/CoursesPage";
 import TeacherResources from "@/pages/TeacherResources";
+import ProfessionalDevelopmentPrograms from "@/pages/ProfessionalDevelopmentPrograms";
 import CodingHub from "@/pages/CodingHub";
 import NotFound from "@/pages/not-found";
 
@@ -78,6 +79,7 @@ function Router() {
 
       {/* Public routes - accessible without authentication */}
       <Route path="/teacher-resources" component={TeacherResources} />
+      <Route path="/professional-development" component={ProfessionalDevelopmentPrograms} />
       <Route path="/courses" component={CoursesPage} />
 
       {/* Protected routes - only accessible when authenticated */}
