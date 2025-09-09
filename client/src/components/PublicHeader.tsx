@@ -1,14 +1,13 @@
-import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AuthModals } from "./AuthModals";
 import { useMarket } from "@/contexts/MarketContext";
+import { useAuth } from "@/hooks/useAuth";
 import { GraduationCap } from "lucide-react";
 
 export function PublicHeader() {
-  const [showAuthModal, setShowAuthModal] = useState<'login' | 'signup' | null>(null);
   const { market, setMarket, getMarketLabel } = useMarket();
+  const { isAuthenticated, isLoading } = useAuth();
   const [location] = useLocation();
 
   const scrollToSection = (sectionId: string) => {
@@ -100,29 +99,48 @@ export function PublicHeader() {
 
               {/* Auth Buttons */}
               <div className="flex items-center space-x-2">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => setShowAuthModal('login')}
-                  data-testid="button-sign-in"
-                >
-                  Sign In
-                </Button>
-                <Button 
-                  onClick={() => setShowAuthModal('signup')}
-                  data-testid="button-get-started"
-                >
-                  Get Started
-                </Button>
+                {isLoading ? (
+                  <div className="w-16 h-9 bg-muted animate-pulse rounded"></div>
+                ) : isAuthenticated ? (
+                  <div className="flex items-center space-x-2">
+                    <Button 
+                      variant="outline"
+                      onClick={() => window.location.href = '/'}
+                      data-testid="button-dashboard"
+                    >
+                      Dashboard
+                    </Button>
+                    <Button 
+                      variant="ghost"
+                      onClick={() => window.location.href = '/api/logout'}
+                      data-testid="button-logout"
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => window.location.href = '/api/login'}
+                      data-testid="button-sign-in"
+                    >
+                      Sign In
+                    </Button>
+                    <Button 
+                      onClick={() => window.location.href = '/api/login'}
+                      data-testid="button-get-started"
+                    >
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <AuthModals 
-        showModal={showAuthModal} 
-        onClose={() => setShowAuthModal(null)} 
-      />
     </>
   );
 }
