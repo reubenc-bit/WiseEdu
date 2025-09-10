@@ -13,16 +13,21 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    if (!email || !password) {
+    // Basic validation - same pattern as enrollment form
+    if (!formData.email || !formData.password) {
       toast({
         title: "Missing Information",
         description: "Please enter both email and password.",
@@ -36,11 +41,21 @@ export default function SignIn() {
       const response = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        window.location.href = '/dashboard';
+        // Success feedback like enrollment form
+        toast({
+          title: "Sign In Successful!",
+          description: "Welcome back! Redirecting to your dashboard.",
+        });
+        
+        // Reset form and redirect
+        setFormData({ email: '', password: '' });
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1000);
       } else {
         const error = await response.json();
         toast({
@@ -121,6 +136,8 @@ export default function SignIn() {
                   name="email"
                   type="email"
                   placeholder="student@school.edu"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
                   required
                   data-testid="input-email"
                 />
@@ -134,6 +151,8 @@ export default function SignIn() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
                     required
                     className="pr-10"
                     data-testid="input-password"

@@ -18,26 +18,103 @@ export default function SignUp() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const { market } = useMarket();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'student',
+    market: market
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
-    try {
-      // Redirect to Replit Auth login (which handles both login and signup)
-      window.location.href = '/api/login';
-    } catch (error) {
+    // Basic validation - same pattern as enrollment form
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
       toast({
-        title: "Error",
-        description: "Failed to create account. Please try again.",
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
+      setIsLoading(false);
+      return;
+    }
+
+    // Password confirmation check
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Password and confirm password do not match.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          role: selectedRole || formData.role,
+          market: market
+        }),
+      });
+
+      if (response.ok) {
+        // Success feedback like enrollment form
+        toast({
+          title: "Account Created Successfully!",
+          description: "Welcome to CodewiseHub! You can now sign in to your account.",
+        });
+        
+        // Reset form and redirect to signin
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          role: 'student',
+          market: market
+        });
+        setSelectedRole('');
+        setTimeout(() => {
+          setLocation('/signin');
+        }, 1000);
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Sign Up Failed",
+          description: error.message || "Failed to create account. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Connection Error",
+        description: "Please check your internet connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
     }
   };
 
   const handleQuickSignup = () => {
-    window.location.href = '/api/login';
+    // Use traditional form instead
+    const form = document.getElementById('signup-form') as HTMLFormElement;
+    if (form) {
+      form.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const roleOptions = [
@@ -121,7 +198,7 @@ export default function SignUp() {
                 className="w-full bg-primary hover:bg-primary/90"
                 data-testid="button-quick-signup"
               >
-                Continue with Replit Auth
+                Use Registration Form Below
               </Button>
             </div>
 
@@ -135,13 +212,15 @@ export default function SignUp() {
             </div>
 
             {/* Traditional Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form id="signup-form" onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
                     placeholder="John"
+                    value={formData.firstName}
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
                     required
                     data-testid="input-first-name"
                   />
@@ -151,6 +230,8 @@ export default function SignUp() {
                   <Input
                     id="lastName"
                     placeholder="Doe"
+                    value={formData.lastName}
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
                     required
                     data-testid="input-last-name"
                   />
@@ -163,6 +244,8 @@ export default function SignUp() {
                   id="email"
                   type="email"
                   placeholder="student@school.edu"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
                   required
                   data-testid="input-email"
                 />
@@ -215,6 +298,8 @@ export default function SignUp() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
                     required
                     className="pr-10"
                     data-testid="input-password"
@@ -243,6 +328,8 @@ export default function SignUp() {
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="••••••••"
+                    value={formData.confirmPassword}
+                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
                     required
                     className="pr-10"
                     data-testid="input-confirm-password"
