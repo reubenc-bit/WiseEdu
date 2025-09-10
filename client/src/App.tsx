@@ -18,6 +18,8 @@ import CoursesPage from "@/pages/CoursesPage";
 import TeacherResources from "@/pages/TeacherResources";
 import ProfessionalDevelopmentPrograms from "@/pages/ProfessionalDevelopmentPrograms";
 import CodingHub from "@/pages/CodingHub";
+import SignIn from "@/pages/SignIn";
+import SignUp from "@/pages/SignUp";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -51,6 +53,8 @@ function Router() {
       <Route path="/teacher-resources" component={TeacherResources} />
       <Route path="/professional-development" component={ProfessionalDevelopmentPrograms} />
       <Route path="/courses" component={CoursesPage} />
+      <Route path="/signin" component={SignIn} />
+      <Route path="/signup" component={SignUp} />
 
       {/* Protected routes - only accessible when authenticated */}
       <Route path="/dashboard/courses">
