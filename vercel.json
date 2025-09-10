@@ -5,10 +5,10 @@
   "framework": "vite",
   "functions": {
     "api/auth/signup.ts": {
-      "runtime": "@vercel/node@2.15.1"
+      "runtime": "@vercel/node@3"
     },
     "api/auth/signin.ts": {
-      "runtime": "@vercel/node@2.15.1"
+      "runtime": "@vercel/node@3"
     }
   },
   "rewrites": [
