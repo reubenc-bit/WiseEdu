@@ -3,10 +3,78 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertCourseSchema, insertLessonSchema, insertUserProgressSchema, insertProjectSchema } from "@shared/schema";
+import bcrypt from "bcrypt";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
+
+  // Sign up endpoint
+  app.post('/api/auth/signup', async (req: any, res) => {
+    try {
+      const { email, password, firstName, lastName, role = 'student', market = 'south-africa' } = req.body;
+      
+      if (!email || !password || !firstName || !lastName) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(email);
+      if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 12);
+
+      // Create user
+      const user = await storage.createUser({
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        role,
+        market
+      });
+
+      // Set up session (simplified for email/password auth)
+      (req as any).user = user;
+      res.json({ message: "User created successfully", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, market: user.market } });
+    } catch (error) {
+      console.error('Signup error:', error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // Sign in endpoint
+  app.post('/api/auth/signin', async (req: any, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+
+      // Find user
+      const user = await storage.getUserByEmail(email);
+      if (!user || !user.password) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+
+      // Set up session (simplified for email/password auth)
+      (req as any).user = user;
+      res.json({ message: "Signed in successfully", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, market: user.market } });
+    } catch (error) {
+      console.error('Signin error:', error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {

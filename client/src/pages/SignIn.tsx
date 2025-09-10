@@ -18,15 +18,44 @@ export default function SignIn() {
     event.preventDefault();
     setIsLoading(true);
 
-    try {
-      // Redirect to Replit Auth login
-      window.location.href = '/api/login';
-    } catch (error) {
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    if (!email || !password) {
       toast({
-        title: "Error",
-        description: "Failed to sign in. Please try again.",
+        title: "Missing Information",
+        description: "Please enter both email and password.",
         variant: "destructive",
       });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        window.location.href = '/dashboard';
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Sign In Failed",
+          description: error.message || "Invalid email or password.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Connection Error",
+        description: "Please check your internet connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
     }
   };
@@ -89,6 +118,7 @@ export default function SignIn() {
                 <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="student@school.edu"
                   required
@@ -101,6 +131,7 @@ export default function SignIn() {
                 <div className="relative">
                   <Input
                     id="password"
+                    name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     required

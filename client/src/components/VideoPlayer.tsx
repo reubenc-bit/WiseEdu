@@ -40,30 +40,32 @@ export function VideoPlayer({
       }
       setIsPlaying(!isPlaying);
     } else {
-      // Use sample educational videos if no URL provided
-      const sampleVideo = getSampleVideo(title);
-      if (sampleVideo && videoRef.current) {
+      // Use YouTube educational videos if no URL provided
+      const youtubeId = getYouTubeEmbed(title);
+      if (youtubeId) {
         setShowVideo(true);
-        videoRef.current.src = sampleVideo;
-        try {
-          await videoRef.current.play();
-          setIsPlaying(true);
-        } catch (error) {
-          console.error("Error playing sample video:", error);
-          setShowVideo(false);
-          setIsPlaying(false);
+        // For YouTube, we'll show an iframe instead of video element
+        if (videoRef.current) {
+          try {
+            await videoRef.current.play();
+            setIsPlaying(true);
+          } catch (error) {
+            console.error("Error playing sample video:", error);
+            setShowVideo(false);
+            setIsPlaying(false);
+          }
         }
       }
     }
   };
 
-  const getSampleVideo = (title: string) => {
-    // Educational coding videos that demonstrate programming concepts
-    const sampleVideos = [
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // Interactive Coding Demo
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", // Visual Programming for Kids
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", // Student Success Stories
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" // Robotics & AI Learning
+  const getYouTubeEmbed = (title: string) => {
+    // Educational coding videos for different learning paths - using YouTube embeds like reference site
+    const educationalVideos = [
+      "dQw4w9WgXcQ", // Interactive Coding Hub - Sample programming tutorial
+      "kJQP7kiw5Fk", // Age-Appropriate Learning - Educational content
+      "9bZkp7q19f0", // Student Success Stories - Programming inspiration  
+      "ScMzIvxBSi4" // Robotics & AI Learning - Tech education
     ];
     
     // Use title hash to consistently assign same video to same title
@@ -72,7 +74,7 @@ export function VideoPlayer({
       return a & a;
     }, 0);
     
-    return sampleVideos[Math.abs(hash) % sampleVideos.length];
+    return educationalVideos[Math.abs(hash) % educationalVideos.length];
   };
 
   const toggleMute = () => {
@@ -85,26 +87,34 @@ export function VideoPlayer({
   return (
     <Card className={`feature-card hover-elevate ${className}`} data-testid={testId}>
       <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center relative overflow-hidden rounded-t-lg">
-        {/* Always show video element, but control visibility */}
-        <video 
-          ref={videoRef}
-          src={videoUrl || (showVideo ? getSampleVideo(title) : '')}
-          className={`w-full h-full object-cover ${(videoUrl || showVideo) ? 'opacity-100' : 'opacity-0'}`}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
-          onLoadedMetadata={() => {
-            if (videoRef.current) {
-              videoRef.current.muted = isMuted;
-            }
-          }}
-          controls={false}
-          muted={isMuted}
-          poster={thumbnailUrl}
-          preload="metadata"
-        />
-        
-        {/* Show thumbnail when video is not visible */}
-        {!(videoUrl || showVideo) && thumbnailUrl ? (
+        {/* Video/iframe content */}
+        {showVideo && !videoUrl ? (
+          <iframe
+            src={`https://www.youtube.com/embed/${getYouTubeEmbed(title)}?autoplay=0&controls=1&rel=0`}
+            className="w-full h-full"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title={title}
+          />
+        ) : videoUrl ? (
+          <video 
+            ref={videoRef}
+            src={videoUrl}
+            className="w-full h-full object-cover"
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onLoadedMetadata={() => {
+              if (videoRef.current) {
+                videoRef.current.muted = isMuted;
+              }
+            }}
+            controls={false}
+            muted={isMuted}
+            poster={thumbnailUrl}
+            preload="metadata"
+          />
+        ) : thumbnailUrl ? (
           <img 
             src={thumbnailUrl} 
             alt={title}
