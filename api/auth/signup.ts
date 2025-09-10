@@ -4,12 +4,28 @@ import { db } from '../lib/db';
 import { users } from '../../shared/schema';
 
 export default async function handler(req: any, res: any) {
+  // Set CORS headers for Vercel
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
   try {
+    // Log for debugging
+    console.log('Environment check:', {
+      hasDbUrl: !!process.env.DATABASE_URL,
+      nodeEnv: process.env.NODE_ENV,
+      body: req.body
+    });
     const { email, password, firstName, lastName, role = 'student', market = 'south-africa' } = req.body;
     
     if (!email || !password || !firstName || !lastName) {
