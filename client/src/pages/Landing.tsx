@@ -644,7 +644,7 @@ export default function Landing() {
               variant="outline"
               size="lg"
               className="border-primary-foreground/20 hover:bg-primary-foreground/10 text-primary-foreground px-8 py-4 text-lg font-semibold"
-              onClick={() => scrollToSection('contact')}
+              onClick={() => window.location.href = '/contact'}
               data-testid="button-request-demo"
             >
               Schools: Request Demo
@@ -653,80 +653,55 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* Footer - Matching Reference Implementation */}
       <footer id="contact" className="bg-card border-t border-border py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
-                CodewiseHub
-              </h3>
-              <p className="text-muted-foreground mb-4">
-                Empowering the next generation of innovators through comprehensive coding and robotics education.
+          <div className="text-center mb-8">
+            <p className="text-muted-foreground mb-6">Free curriculum consultation</p>
+            <p className="text-muted-foreground mb-6">30-day money-back guarantee</p>
+            <p className="text-muted-foreground mb-6">Ongoing implementation support</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Email Us */}
+            <div className="text-center">
+              <h4 className="font-semibold mb-3">Email Us</h4>
+              <p className="text-xl font-bold text-primary mb-2" data-testid="text-contact-email">
+                schools@codewisehub.co.za
               </p>
+              <p className="text-muted-foreground">Response within 24 hours</p>
             </div>
             
-            <div>
-              <h4 className="font-semibold mb-3">Quick Links</h4>
-              <div className="space-y-2">
-                <button 
-                  onClick={() => scrollToSection('home')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-home"
-                >
-                  Home
-                </button>
-                <button 
-                  onClick={() => scrollToSection('courses')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-courses"
-                >
-                  Courses
-                </button>
-                <button 
-                  onClick={() => scrollToSection('resources')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-resources"
-                >
-                  Resources
-                </button>
-                <button 
-                  onClick={() => scrollToSection('teacher-training')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-teacher-training"
-                >
-                  Teacher Training
-                </button>
-                <button 
-                  onClick={() => scrollToSection('pricing')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-pricing"
-                >
-                  Pricing
-                </button>
-                <button 
-                  onClick={() => scrollToSection('about')}
-                  className="block text-muted-foreground hover:text-primary transition-colors"
-                  data-testid="footer-link-about"
-                >
-                  About
-                </button>
+            {/* Schedule Demo */}
+            <div className="text-center">
+              <h4 className="font-semibold mb-3">Schedule Demo</h4>
+              <p className="text-muted-foreground mb-4">Book a personalized consultation</p>
+              <Button 
+                onClick={() => window.location.href = '/contact'}
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                data-testid="footer-book-demo"
+              >
+                Book Now
+              </Button>
+            </div>
+            
+            {/* Visit Us */}
+            <div className="text-center">
+              <h4 className="font-semibold mb-3">Visit Us</h4>
+              <p className="text-muted-foreground mb-2">Cape Town & Johannesburg</p>
+              <p className="text-sm text-muted-foreground">Training centers available</p>
+            </div>
+          </div>
+          
+          {/* Bottom section with certifications */}
+          <div className="mt-12 pt-8 border-t border-border">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <div className="mb-4 md:mb-0">
+                <h3 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  CodewiseHub
+                </h3>
               </div>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-3">Support</h4>
-              <div className="space-y-2">
-                <p className="text-muted-foreground" data-testid="text-contact-email">
-                  Email: schools@codewisehub.co.za
-                </p>
-                <p className="text-muted-foreground">Response within 24 hours</p>
-              </div>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-3">Certifications</h4>
-              <div className="space-y-2">
+              <div className="flex items-center space-x-6">
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Award className="w-4 h-4 text-accent mr-2" />
                   <span>Education Certified</span>
