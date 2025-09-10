@@ -36,7 +36,8 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+// Function to initialize the app
+async function initializeApp() {
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -47,25 +48,45 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
+  // Check if we're running on Vercel
+  const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+  
+  if (isVercel) {
+    // For Vercel, just return the app without starting a server
+    return app;
   } else {
-    serveStatic(app);
-  }
+    // For local development, setup Vite and start server
+    if (app.get("env") === "development") {
+      await setupVite(app, server);
+    } else {
+      serveStatic(app);
+    }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
-})();
+    const port = parseInt(process.env.PORT || '5000', 10);
+    server.listen({
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    }, () => {
+      log(`serving on port ${port}`);
+    });
+    
+    return server;
+  }
+}
+
+// For Vercel serverless functions
+if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+  let appPromise: Promise<any>;
+  
+  module.exports = async (req: any, res: any) => {
+    if (!appPromise) {
+      appPromise = initializeApp();
+    }
+    const app = await appPromise;
+    return app(req, res);
+  };
+} else {
+  // For local development
+  initializeApp();
+}
