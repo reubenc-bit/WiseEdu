@@ -86,7 +86,11 @@ export default function SignUp() {
         body: JSON.stringify(requestData),
       });
 
+      console.log("Response received:", response.status, response.statusText);
+      
       if (response.ok) {
+        const result = await response.json();
+        console.log("Success response:", result);
         toast({
           title: "Account Created Successfully!",
           description: "Welcome to CodewiseHub! You can now sign in to your account.",
@@ -106,10 +110,23 @@ export default function SignUp() {
           setLocation('/signin');
         }, 1000);
       } else {
-        const error = await response.json();
+        console.log("Error response status:", response.status);
+        const responseText = await response.text();
+        console.log("Error response text:", responseText);
+        
+        let errorMessage = "Failed to create account. Please try again.";
+        
+        try {
+          const error = JSON.parse(responseText);
+          errorMessage = error.message || errorMessage;
+        } catch (parseError) {
+          console.log("Response is not JSON:", parseError);
+          errorMessage = `Server error (${response.status}): ${responseText.substring(0, 100)}`;
+        }
+        
         toast({
           title: "Sign Up Failed",
-          description: error.message || "Failed to create account. Please try again.",
+          description: errorMessage,
           variant: "destructive",
         });
       }
