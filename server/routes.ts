@@ -40,7 +40,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set up session for email/password auth
       req.session.userId = user.id;
       req.session.isAuthenticated = true;
-      res.json({ message: "User created successfully", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, market: user.market } });
+      // Return sanitized user data without password
+      const { password: _, ...sanitizedUser } = user;
+      res.json({ message: "User created successfully", user: sanitizedUser });
     } catch (error) {
       console.error('Signup error:', error);
       res.status(500).json({ message: "Internal server error" });
@@ -71,7 +73,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set up session for email/password auth
       req.session.userId = user.id;
       req.session.isAuthenticated = true;
-      res.json({ message: "Signed in successfully", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, market: user.market } });
+      // Return sanitized user data without password
+      const { password: _, ...sanitizedUser } = user;
+      res.json({ message: "Signed in successfully", user: sanitizedUser });
     } catch (error) {
       console.error('Signin error:', error);
       res.status(500).json({ message: "Internal server error" });
@@ -96,7 +100,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (req.session?.userId && req.session?.isAuthenticated) {
         const user = await storage.getUser(req.session.userId);
         if (user) {
-          return res.json(user);
+          // Sanitize user data - remove sensitive fields
+          const { password, ...sanitizedUser } = user;
+          return res.json(sanitizedUser);
         }
       }
 
@@ -105,7 +111,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const userId = req.user.claims.sub;
         const user = await storage.getUser(userId);
         if (user) {
-          return res.json(user);
+          // Sanitize user data - remove sensitive fields
+          const { password, ...sanitizedUser } = user;
+          return res.json(sanitizedUser);
         }
       }
 

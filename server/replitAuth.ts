@@ -9,12 +9,18 @@ import connectPg from "connect-pg-simple";
 import MemoryStore from "memorystore";
 import { storage } from "./storage";
 
-if (!process.env.REPLIT_DOMAINS) {
-  throw new Error("Environment variable REPLIT_DOMAINS not provided");
+// Check if we're in a Replit environment
+const isReplitEnvironment = process.env.REPLIT_DOMAINS && process.env.REPL_ID;
+
+if (!isReplitEnvironment) {
+  console.log("Not in Replit environment - Replit Auth will be disabled");
 }
 
 const getOidcConfig = memoize(
   async () => {
+    if (!isReplitEnvironment) {
+      throw new Error("OIDC not available outside Replit environment");
+    }
     return await client.discovery(
       new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
       process.env.REPL_ID!
@@ -54,6 +60,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: isProduction,
+      sameSite: "lax", // CSRF protection
       maxAge: sessionTtl,
     },
   });
@@ -84,10 +91,18 @@ async function upsertUser(
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());
+  
+  // Only set up Replit OIDC if we're in a Replit environment
+  if (!isReplitEnvironment) {
+    console.log("Skipping Replit OIDC setup - not in Replit environment");
+    return;
+  }
+  
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const config = await getOidcConfig();
+  try {
+    const config = await getOidcConfig();
 
   const verify: VerifyFunction = async (
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
@@ -153,6 +168,11 @@ export async function setupAuth(app: Express) {
       );
     });
   });
+  
+  } catch (error) {
+    console.error("Failed to set up Replit OIDC:", error);
+    console.log("Continuing without Replit authentication");
+  }
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
