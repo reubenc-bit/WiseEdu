@@ -36,7 +36,10 @@ export default function SignUp() {
     event.preventDefault();
     setIsLoading(true);
 
+    console.log("Form submission started", { formData, selectedRole, market });
+
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
+      console.log("Validation failed: missing fields");
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -47,6 +50,7 @@ export default function SignUp() {
     }
 
     if (formData.password !== formData.confirmPassword) {
+      console.log("Validation failed: password mismatch");
       toast({
         title: "Password Mismatch",
         description: "Password and confirm password do not match.",
@@ -56,15 +60,30 @@ export default function SignUp() {
       return;
     }
 
+    if (!selectedRole && !formData.role) {
+      console.log("Validation failed: no role selected");
+      toast({
+        title: "Role Required",
+        description: "Please select your role.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      const requestData = {
+        ...formData,
+        role: selectedRole || formData.role,
+        market: market
+      };
+      
+      console.log("Sending signup request:", requestData);
+      
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          role: selectedRole || formData.role,
-          market: market
-        }),
+        body: JSON.stringify(requestData),
       });
 
       if (response.ok) {
@@ -95,6 +114,7 @@ export default function SignUp() {
         });
       }
     } catch (error) {
+      console.error("Signup error:", error);
       toast({
         title: "Connection Error",
         description: "Please check your internet connection and try again.",
@@ -256,7 +276,7 @@ export default function SignUp() {
 
               <div className="space-y-2">
                 <Label htmlFor="role">I am a...</Label>
-                <Select value={selectedRole} onValueChange={setSelectedRole} required>
+                <Select value={selectedRole || formData.role} onValueChange={(value) => {setSelectedRole(value); handleInputChange('role', value);}} required>
                   <SelectTrigger data-testid="select-role">
                     <SelectValue placeholder="Select your role" />
                   </SelectTrigger>
