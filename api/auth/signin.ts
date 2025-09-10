@@ -1,7 +1,5 @@
 import bcryptjs from 'bcryptjs';
-import { eq } from 'drizzle-orm';
-import { db } from '../lib/db';
-import { users } from '../../shared/schema';
+import { neon } from '@neondatabase/serverless';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -26,9 +24,21 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
+    // Direct SQL connection (no schema imports)
+    const sql = neon(process.env.DATABASE_URL!);
+    
     // Find user
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    if (!user || !user.password) {
+    const users = await sql`
+      SELECT id, email, password, first_name, last_name, role, market, created_at 
+      FROM users WHERE email = ${email}
+    `;
+    
+    if (users.length === 0) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const user = users[0];
+    if (!user.password) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
@@ -38,7 +48,7 @@ export default async function handler(req: any, res: any) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Return sanitized user data without password
+    // Return user without password
     const { password: _, ...sanitizedUser } = user;
     return res.status(200).json({ 
       message: "Sign in successful", 

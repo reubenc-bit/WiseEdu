@@ -1,7 +1,5 @@
 import bcryptjs from 'bcryptjs';
-import { eq } from 'drizzle-orm';
-import { db } from '../lib/db';
-import { users } from '../../shared/schema';
+import { neon } from '@neondatabase/serverless';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -26,30 +24,32 @@ export default async function handler(req: any, res: any) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Check if user already exists
-    const [existingUser] = await db.select().from(users).where(eq(users.email, email));
-    if (existingUser) {
+    // Direct SQL connection (no schema imports)
+    const sql = neon(process.env.DATABASE_URL!);
+    
+    // Check if user exists
+    const existingUsers = await sql`
+      SELECT id FROM users WHERE email = ${email}
+    `;
+    
+    if (existingUsers.length > 0) {
       return res.status(400).json({ message: "User already exists" });
     }
 
     // Hash password
     const hashedPassword = await bcryptjs.hash(password, 12);
 
-    // Create user
-    const [user] = await db.insert(users).values({
-      email,
-      password: hashedPassword,
-      firstName,
-      lastName,
-      role,
-      market
-    }).returning();
+    // Insert user
+    const newUsers = await sql`
+      INSERT INTO users (email, password, first_name, last_name, role, market)
+      VALUES (${email}, ${hashedPassword}, ${firstName}, ${lastName}, ${role}::user_role, ${market}::market)
+      RETURNING id, email, first_name, last_name, role, market, created_at
+    `;
 
-    // Return sanitized user data without password
-    const { password: _, ...sanitizedUser } = user;
+    const user = newUsers[0];
     return res.status(200).json({ 
       message: "User created successfully", 
-      user: sanitizedUser 
+      user: user
     });
 
   } catch (error) {
