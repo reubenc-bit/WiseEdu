@@ -115,7 +115,15 @@ export function PublicHeader() {
                     </Button>
                     <Button 
                       variant="ghost"
-                      onClick={() => window.location.href = '/api/logout'}
+                      onClick={async () => {
+                        try {
+                          await fetch('/api/auth/logout', { method: 'POST' });
+                          window.location.href = '/';
+                        } catch (error) {
+                          // Fallback to Replit logout if available
+                          window.location.href = '/api/logout';
+                        }
+                      }}
                       data-testid="button-logout"
                     >
                       Logout
@@ -125,13 +133,13 @@ export function PublicHeader() {
                   <>
                     <Button 
                       variant="ghost" 
-                      onClick={() => window.location.href = '/api/login'}
+                      onClick={() => window.location.href = '/signin'}
                       data-testid="button-sign-in"
                     >
                       Sign In
                     </Button>
                     <Button 
-                      onClick={() => window.location.href = '/api/login'}
+                      onClick={() => window.location.href = '/signup'}
                       data-testid="button-get-started"
                     >
                       Get Started

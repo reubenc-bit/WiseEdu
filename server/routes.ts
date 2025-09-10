@@ -37,8 +37,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         market
       });
 
-      // Set up session (simplified for email/password auth)
-      (req as any).user = user;
+      // Set up session for email/password auth
+      req.session.userId = user.id;
+      req.session.isAuthenticated = true;
       res.json({ message: "User created successfully", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, market: user.market } });
     } catch (error) {
       console.error('Signup error:', error);
@@ -67,8 +68,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
-      // Set up session (simplified for email/password auth)
-      (req as any).user = user;
+      // Set up session for email/password auth
+      req.session.userId = user.id;
+      req.session.isAuthenticated = true;
       res.json({ message: "Signed in successfully", user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role, market: user.market } });
     } catch (error) {
       console.error('Signin error:', error);
@@ -76,27 +78,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Logout endpoint
+  app.post('/api/auth/logout', (req: any, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Failed to logout" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
   // Auth routes
   app.get('/api/auth/user', async (req: any, res) => {
     try {
-      // Check if user is authenticated without throwing error
-      if (!req.isAuthenticated() || !req.user?.claims?.sub) {
-        return res.json(null);
+      // Check for email/password auth session first
+      if (req.session?.userId && req.session?.isAuthenticated) {
+        const user = await storage.getUser(req.session.userId);
+        if (user) {
+          return res.json(user);
+        }
       }
 
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
+      // Check for Replit auth (only in Replit environment)
+      if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        const userId = req.user.claims.sub;
+        const user = await storage.getUser(userId);
+        if (user) {
+          return res.json(user);
+        }
+      }
+
+      res.json(null);
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
 
-  // Course routes (protected)
-  app.get('/api/courses', isAuthenticated, async (req: any, res) => {
+  // Custom authentication middleware for both session and Replit auth
+  const requireAuth = async (req: any, res: any, next: any) => {
     try {
-      const userId = req.user.claims.sub;
+      // Check email/password session auth first
+      if (req.session?.userId && req.session?.isAuthenticated) {
+        const user = await storage.getUser(req.session.userId);
+        if (user) {
+          req.user = { id: user.id, claims: { sub: user.id } };
+          return next();
+        }
+      }
+
+      // Check Replit auth (only in Replit environment)
+      if (req.isAuthenticated && req.isAuthenticated() && req.user?.claims?.sub) {
+        return next();
+      }
+
+      return res.status(401).json({ message: "Authentication required" });
+    } catch (error) {
+      console.error("Auth middleware error:", error);
+      return res.status(500).json({ message: "Authentication error" });
+    }
+  };
+
+  // Course routes (protected)
+  app.get('/api/courses', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -111,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/courses/:id', isAuthenticated, async (req: any, res) => {
+  app.get('/api/courses/:id', requireAuth, async (req: any, res) => {
     try {
       const course = await storage.getCourse(req.params.id);
       if (!course) {
@@ -124,9 +171,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/courses', isAuthenticated, async (req: any, res) => {
+  app.post('/api/courses', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       if (!user || user.role !== 'admin') {
         return res.status(403).json({ message: "Forbidden" });
@@ -142,7 +189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Lesson routes (protected)
-  app.get('/api/courses/:courseId/lessons', isAuthenticated, async (req: any, res) => {
+  app.get('/api/courses/:courseId/lessons', requireAuth, async (req: any, res) => {
     try {
       const lessons = await storage.getLessons(req.params.courseId);
       res.json(lessons);
@@ -152,7 +199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/lessons/:id', isAuthenticated, async (req: any, res) => {
+  app.get('/api/lessons/:id', requireAuth, async (req: any, res) => {
     try {
       const lesson = await storage.getLesson(req.params.id);
       if (!lesson) {
@@ -166,9 +213,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Progress routes (protected)
-  app.get('/api/progress', isAuthenticated, async (req: any, res) => {
+  app.get('/api/progress', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const { courseId } = req.query;
       const progress = await storage.getUserProgress(userId, courseId as string);
       res.json(progress);
@@ -178,9 +225,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/progress', isAuthenticated, async (req: any, res) => {
+  app.post('/api/progress', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const progressData = insertUserProgressSchema.parse({
         ...req.body,
         userId,
@@ -194,9 +241,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Project routes (protected)
-  app.get('/api/projects', isAuthenticated, async (req: any, res) => {
+  app.get('/api/projects', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const projects = await storage.getUserProjects(userId);
       res.json(projects);
     } catch (error) {
@@ -205,9 +252,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/projects', isAuthenticated, async (req: any, res) => {
+  app.post('/api/projects', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const projectData = insertProjectSchema.parse({
         ...req.body,
         userId,
@@ -220,9 +267,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put('/api/projects/:id', isAuthenticated, async (req: any, res) => {
+  app.put('/api/projects/:id', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const project = await storage.getProject(req.params.id);
       if (!project || project.userId !== userId) {
         return res.status(404).json({ message: "Project not found" });
@@ -238,9 +285,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Achievement routes (protected)
-  app.get('/api/achievements', isAuthenticated, async (req: any, res) => {
+  app.get('/api/achievements', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const achievements = await storage.getUserAchievements(userId);
       res.json(achievements);
     } catch (error) {
@@ -250,9 +297,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Teacher routes (protected)
-  app.get('/api/teacher/students', isAuthenticated, async (req: any, res) => {
+  app.get('/api/teacher/students', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       if (!user || user.role !== 'teacher') {
         return res.status(403).json({ message: "Forbidden" });
@@ -266,9 +313,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/teacher/certifications', isAuthenticated, async (req: any, res) => {
+  app.get('/api/teacher/certifications', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       if (!user || user.role !== 'teacher') {
         return res.status(403).json({ message: "Forbidden" });
@@ -283,9 +330,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Parent routes (protected)
-  app.get('/api/parent/children', isAuthenticated, async (req: any, res) => {
+  app.get('/api/parent/children', requireAuth, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.claims?.sub || req.user.id;
       const user = await storage.getUser(userId);
       if (!user || user.role !== 'parent') {
         return res.status(403).json({ message: "Forbidden" });

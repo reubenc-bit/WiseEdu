@@ -1,11 +1,88 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LogIn, ArrowLeft, Shield, Users, GraduationCap } from "lucide-react";
-import { Link } from "wouter";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { LogIn, ArrowLeft, Shield, Users, GraduationCap, Eye, EyeOff } from "lucide-react";
+import { Link, useLocation } from "wouter";
 
 export default function SignIn() {
-  const handleLogin = () => {
-    window.location.href = '/api/login';
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [location, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    if (!formData.email || !formData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Sign In Successful!",
+          description: "Welcome back! Redirecting to your dashboard.",
+        });
+        
+        setFormData({ email: '', password: '' });
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
+      } else {
+        const error = await response.json();
+        toast({
+          title: "Sign In Failed",
+          description: error.message || "Invalid email or password.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Connection Error",
+        description: "Please check your internet connection and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDemoLogin = () => {
+    // Only use Replit Auth if in Replit environment
+    if (window.location.hostname.includes('replit')) {
+      window.location.href = '/api/login';
+    } else {
+      // For Vercel/external deployments, show form
+      toast({
+        title: "Demo Access",
+        description: "Please create an account or sign in with your email.",
+      });
+    }
   };
 
   return (
@@ -24,53 +101,119 @@ export default function SignIn() {
         </div>
 
         <Card className="feature-card">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="flex items-center justify-center gap-2 text-3xl">
-              <LogIn className="w-8 h-8" />
-              Welcome Back
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="flex items-center justify-center gap-2">
+              <LogIn className="w-5 h-5" />
+              Sign In
             </CardTitle>
-            <p className="text-muted-foreground mt-2">
-              Access your CodewiseHub account with secure authentication
-            </p>
           </CardHeader>
           
-          <CardContent className="space-y-8">
-            {/* Main Login Button */}
-            <div className="text-center">
-              <Button 
-                onClick={handleLogin}
-                size="lg"
-                className="w-full py-6 text-lg bg-primary hover:bg-primary/90"
-                data-testid="button-sign-in"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                Sign In with Replit
-              </Button>
-            </div>
+          <CardContent className="space-y-6">
+            {/* Conditional Demo Access - Only show Replit Auth on Replit */}
+            {typeof window !== 'undefined' && window.location.hostname.includes('replit') && (
+              <>
+                <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
+                  <h4 className="font-semibold text-accent mb-2">Quick Demo Access</h4>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Try CodewiseHub instantly with Replit authentication
+                  </p>
+                  <Button 
+                    onClick={handleDemoLogin}
+                    className="w-full bg-accent hover:bg-accent/90"
+                    data-testid="button-demo-login"
+                  >
+                    Continue with Replit Auth
+                  </Button>
+                </div>
 
-            {/* Role Information */}
-            <div className="bg-muted/50 rounded-lg p-6">
-              <h4 className="font-semibold mb-4 text-center">Access for All Roles</h4>
-              <div className="grid grid-cols-1 gap-3">
-                <div className="flex items-center space-x-3">
-                  <Users className="w-5 h-5 text-primary" />
-                  <span className="text-sm"><strong>Students:</strong> Access courses and coding environment</span>
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or continue with email</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <GraduationCap className="w-5 h-5 text-secondary" />
-                  <span className="text-sm"><strong>Teachers:</strong> Manage classes and track progress</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Shield className="w-5 h-5 text-accent" />
-                  <span className="text-sm"><strong>Parents:</strong> Monitor child's learning journey</span>
+              </>
+            )}
+
+            {/* Email/Password Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="student@school.edu"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  required
+                  data-testid="input-email"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={(e) => handleInputChange('password', e.target.value)}
+                    required
+                    className="pr-10"
+                    data-testid="input-password"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                    data-testid="button-toggle-password"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
                 </div>
               </div>
-            </div>
 
-            {/* Security Notice */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <input 
+                    type="checkbox" 
+                    id="remember" 
+                    className="rounded"
+                    data-testid="checkbox-remember"
+                  />
+                  <Label htmlFor="remember" className="text-sm">Remember me</Label>
+                </div>
+              </div>
+
+              <Button 
+                type="submit" 
+                className="w-full" 
+                disabled={isLoading}
+                data-testid="button-sign-in"
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
+              </Button>
+            </form>
+
             <div className="text-center">
-              <p className="text-xs text-muted-foreground">
-                🔒 Secure authentication powered by Replit
+              <p className="text-sm text-muted-foreground">
+                Don't have an account?{" "}
+                <Link href="/signup">
+                  <Button variant="ghost" className="p-0 h-auto font-semibold text-primary hover:text-primary/80" data-testid="link-signup">
+                    Sign up here
+                  </Button>
+                </Link>
               </p>
             </div>
           </CardContent>
