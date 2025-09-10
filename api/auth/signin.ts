@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-
-// Import storage
-import { storage } from '../../server/storage';
+import { eq } from 'drizzle-orm';
+import { db } from '../lib/db';
+import { users } from '../../shared/schema';
 
 export default async function handler(req: any, res: any) {
   // Only allow POST
@@ -17,7 +17,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // Find user
-    const user = await storage.getUserByEmail(email);
+    const [user] = await db.select().from(users).where(eq(users.email, email));
     if (!user || !user.password) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
