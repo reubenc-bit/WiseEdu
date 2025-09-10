@@ -332,7 +332,7 @@ export default function ProfessionalDevelopmentPrograms() {
 
                       <Button 
                         className="w-full" 
-                        onClick={() => openEnrollmentForm(program.level)}
+                        onClick={() => openEnrollmentForm(program.title)}
                         data-testid={`button-enroll-${index}`}
                       >
                         Enroll Now <ChevronRight className="w-4 h-4 ml-2" />

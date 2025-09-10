@@ -27,22 +27,32 @@ export function VideoPlayer({
   const [showVideo, setShowVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handlePlay = () => {
+  const handlePlay = async () => {
     if (videoUrl && videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
       } else {
-        videoRef.current.play();
+        try {
+          await videoRef.current.play();
+        } catch (error) {
+          console.error("Error playing video:", error);
+        }
       }
       setIsPlaying(!isPlaying);
     } else {
       // Use sample educational videos if no URL provided
       const sampleVideo = getSampleVideo(title);
       if (sampleVideo && videoRef.current) {
-        videoRef.current.src = sampleVideo;
         setShowVideo(true);
-        videoRef.current.play();
-        setIsPlaying(true);
+        videoRef.current.src = sampleVideo;
+        try {
+          await videoRef.current.play();
+          setIsPlaying(true);
+        } catch (error) {
+          console.error("Error playing sample video:", error);
+          setShowVideo(false);
+          setIsPlaying(false);
+        }
       }
     }
   };
@@ -75,19 +85,26 @@ export function VideoPlayer({
   return (
     <Card className={`feature-card hover-elevate ${className}`} data-testid={testId}>
       <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center relative overflow-hidden rounded-t-lg">
-        {/* Show actual video if URL provided and video is playing */}
-        {(videoUrl || showVideo) ? (
-          <video 
-            ref={videoRef}
-            src={videoUrl || getSampleVideo(title)}
-            className="w-full h-full object-cover"
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            controls={false}
-            muted={isMuted}
-            poster={thumbnailUrl}
-          />
-        ) : thumbnailUrl ? (
+        {/* Always show video element, but control visibility */}
+        <video 
+          ref={videoRef}
+          src={videoUrl || (showVideo ? getSampleVideo(title) : '')}
+          className={`w-full h-full object-cover ${(videoUrl || showVideo) ? 'opacity-100' : 'opacity-0'}`}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onLoadedMetadata={() => {
+            if (videoRef.current) {
+              videoRef.current.muted = isMuted;
+            }
+          }}
+          controls={false}
+          muted={isMuted}
+          poster={thumbnailUrl}
+          preload="metadata"
+        />
+        
+        {/* Show thumbnail when video is not visible */}
+        {!(videoUrl || showVideo) && thumbnailUrl ? (
           <img 
             src={thumbnailUrl} 
             alt={title}
