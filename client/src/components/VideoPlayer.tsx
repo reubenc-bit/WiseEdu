@@ -60,12 +60,12 @@ export function VideoPlayer({
   };
 
   const getYouTubeEmbed = (title: string) => {
-    // Educational coding videos for different learning paths - using YouTube embeds like reference site
+    // Educational coding videos for different learning paths - Real educational content
     const educationalVideos = [
-      "dQw4w9WgXcQ", // Interactive Coding Hub - Sample programming tutorial
-      "kJQP7kiw5Fk", // Age-Appropriate Learning - Educational content
-      "9bZkp7q19f0", // Student Success Stories - Programming inspiration  
-      "ScMzIvxBSi4" // Robotics & AI Learning - Tech education
+      "rfscVS0vtbw", // Learn Python - Full Course for Beginners (freeCodeCamp)
+      "PkZNo7MFNFg", // Learn JavaScript - Full Course for Beginners (freeCodeCamp)
+      "HVsySz-h9r4", // Introduction to Programming (Khan Academy)
+      "nKIu9yen5nc"  // Scratch Programming for Kids (MIT/Educational)
     ];
     
     // Use title hash to consistently assign same video to same title
