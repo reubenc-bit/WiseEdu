@@ -4,28 +4,22 @@ import { db } from '../lib/db';
 import { users } from '../../shared/schema';
 
 export default async function handler(req: any, res: any) {
-  // Set CORS headers for Vercel
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // Only allow POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
   try {
-    // Log for debugging
-    console.log('Environment check:', {
-      hasDbUrl: !!process.env.DATABASE_URL,
-      nodeEnv: process.env.NODE_ENV,
-      body: req.body
-    });
+    // Set CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    // Handle preflight
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
+
+    // Only allow POST
+    if (req.method !== 'POST') {
+      return res.status(405).json({ message: 'Method not allowed' });
+    }
+
     const { email, password } = req.body;
     
     if (!email || !password) {
@@ -46,9 +40,16 @@ export default async function handler(req: any, res: any) {
 
     // Return sanitized user data without password
     const { password: _, ...sanitizedUser } = user;
-    res.json({ message: "Sign in successful", user: sanitizedUser });
+    return res.status(200).json({ 
+      message: "Sign in successful", 
+      user: sanitizedUser 
+    });
+
   } catch (error) {
     console.error('Signin error:', error);
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ 
+      message: "Internal server error",
+      error: error instanceof Error ? error.message : String(error)
+    });
   }
 }
