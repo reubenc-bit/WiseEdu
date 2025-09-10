@@ -70,13 +70,16 @@ export function PublicHeader() {
                 >
                   Pricing
                 </button>
-                <button 
-                  onClick={() => scrollToSection('contact')}
-                  className="text-muted-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                  data-testid="nav-contact"
-                >
-                  Contact
-                </button>
+                <Link href="/contact">
+                  <button 
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive('/contact') ? 'text-primary' : 'text-muted-foreground hover:text-primary'
+                    }`}
+                    data-testid="nav-contact"
+                  >
+                    Contact
+                  </button>
+                </Link>
               </div>
             </nav>
 
