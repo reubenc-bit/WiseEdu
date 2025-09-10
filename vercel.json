@@ -4,18 +4,17 @@
   "installCommand": "npm install",
   "framework": "vite",
   "functions": {
-    "api/server.ts": {
+    "api/auth/signup.ts": {
+      "runtime": "@vercel/node@3.0.7"
+    },
+    "api/auth/signin.ts": {
       "runtime": "@vercel/node@3.0.7"
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/server.ts"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
