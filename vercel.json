@@ -4,14 +4,14 @@
   "installCommand": "npm install",
   "framework": "vite",
   "functions": {
-    "server/index.ts": {
-      "runtime": "nodejs18.x"
+    "api/server.ts": {
+      "runtime": "@vercel/node@3.0.7"
     }
   },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/server/index.ts"
+      "dest": "/api/server.ts"
     },
     {
       "src": "/(.*)",
