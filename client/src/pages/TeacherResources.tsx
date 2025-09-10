@@ -30,6 +30,7 @@ export default function TeacherResources() {
               <Button 
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold"
+                onClick={() => window.location.href = '/professional-development'}
                 data-testid="button-join-training"
               >
                 Join Training Program
@@ -281,7 +282,13 @@ export default function TeacherResources() {
                     <span className="text-sm">Basic robotics concepts</span>
                   </div>
                 </div>
-                <Button className="w-full" data-testid="button-basic-cert">Get Certified</Button>
+                <Button 
+                  className="w-full" 
+                  onClick={() => window.location.href = '/professional-development'}
+                  data-testid="button-basic-cert"
+                >
+                  Get Certified
+                </Button>
               </CardContent>
             </Card>
 
@@ -309,7 +316,13 @@ export default function TeacherResources() {
                     <span className="text-sm">IoT & AI integration</span>
                   </div>
                 </div>
-                <Button className="w-full" data-testid="button-advanced-cert">Get Certified</Button>
+                <Button 
+                  className="w-full" 
+                  onClick={() => window.location.href = '/professional-development'}
+                  data-testid="button-advanced-cert"
+                >
+                  Get Certified
+                </Button>
               </CardContent>
             </Card>
 
@@ -336,7 +349,13 @@ export default function TeacherResources() {
                     <span className="text-sm">Research & development</span>
                   </div>
                 </div>
-                <Button className="w-full" data-testid="button-specialist-cert">Get Certified</Button>
+                <Button 
+                  className="w-full" 
+                  onClick={() => window.location.href = '/professional-development'}
+                  data-testid="button-specialist-cert"
+                >
+                  Get Certified
+                </Button>
               </CardContent>
             </Card>
           </div>

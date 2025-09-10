@@ -36,10 +36,33 @@ export function VideoPlayer({
       }
       setIsPlaying(!isPlaying);
     } else {
-      // Show demo video player for videos without URL
-      setShowVideo(true);
-      setIsPlaying(!isPlaying);
+      // Use sample educational videos if no URL provided
+      const sampleVideo = getSampleVideo(title);
+      if (sampleVideo && videoRef.current) {
+        videoRef.current.src = sampleVideo;
+        setShowVideo(true);
+        videoRef.current.play();
+        setIsPlaying(true);
+      }
     }
+  };
+
+  const getSampleVideo = (title: string) => {
+    // Educational videos that work for demonstration
+    const sampleVideos = [
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+    ];
+    
+    // Use title hash to consistently assign same video to same title
+    const hash = title.split('').reduce((a, b) => {
+      a = ((a << 5) - a) + b.charCodeAt(0);
+      return a & a;
+    }, 0);
+    
+    return sampleVideos[Math.abs(hash) % sampleVideos.length];
   };
 
   const toggleMute = () => {
@@ -53,15 +76,16 @@ export function VideoPlayer({
     <Card className={`feature-card hover-elevate ${className}`} data-testid={testId}>
       <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center relative overflow-hidden rounded-t-lg">
         {/* Show actual video if URL provided and video is playing */}
-        {videoUrl && showVideo ? (
+        {(videoUrl || showVideo) ? (
           <video 
             ref={videoRef}
-            src={videoUrl}
+            src={videoUrl || getSampleVideo(title)}
             className="w-full h-full object-cover"
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             controls={false}
             muted={isMuted}
+            poster={thumbnailUrl}
           />
         ) : thumbnailUrl ? (
           <img 
@@ -118,10 +142,10 @@ export function VideoPlayer({
           {duration}
         </div>
         
-        {/* Live indicator for demo videos */}
+        {/* Educational content indicator */}
         {!videoUrl && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
-            DEMO
+          <div className="absolute top-2 left-2 bg-accent text-accent-foreground px-2 py-1 rounded text-xs font-medium">
+            SAMPLE
           </div>
         )}
       </div>
@@ -136,7 +160,7 @@ export function VideoPlayer({
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">Duration: {duration}</span>
           {!videoUrl && (
-            <span className="text-xs bg-muted px-2 py-1 rounded">Tutorial Coming Soon</span>
+            <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded">Educational Sample</span>
           )}
         </div>
       </CardContent>

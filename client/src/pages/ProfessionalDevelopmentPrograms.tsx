@@ -118,6 +118,7 @@ export default function ProfessionalDevelopmentPrograms() {
               <Button 
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold"
+                onClick={() => window.location.href = '/signup'}
                 data-testid="button-enroll-program"
               >
                 Enroll in Program
@@ -264,7 +265,11 @@ export default function ProfessionalDevelopmentPrograms() {
                         </div>
                       </div>
 
-                      <Button className="w-full" data-testid={`button-enroll-${index}`}>
+                      <Button 
+                        className="w-full" 
+                        onClick={() => window.location.href = '/signup'}
+                        data-testid={`button-enroll-${index}`}
+                      >
                         Enroll Now <ChevronRight className="w-4 h-4 ml-2" />
                       </Button>
                     </div>
