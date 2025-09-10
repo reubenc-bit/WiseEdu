@@ -9,6 +9,9 @@
     },
     "api/auth/signin.ts": {
       "runtime": "@vercel/node@3.2.0"
+    },
+    "api/test-signup.ts": {
+      "runtime": "@vercel/node@3.2.0"
     }
   },
   "rewrites": [
