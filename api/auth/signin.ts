@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../lib/db';
 import { users } from '../../shared/schema';
@@ -33,7 +33,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // Verify password
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    const isValidPassword = await bcryptjs.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(401).json({ message: "Invalid email or password" });
     }

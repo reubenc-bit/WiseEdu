@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../lib/db';
 import { users } from '../../shared/schema';
@@ -33,7 +33,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcryptjs.hash(password, 12);
 
     // Create user
     const [user] = await db.insert(users).values({
