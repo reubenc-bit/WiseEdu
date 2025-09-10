@@ -58,12 +58,12 @@ export function VideoPlayer({
   };
 
   const getSampleVideo = (title: string) => {
-    // Educational videos that work for demonstration
+    // Educational coding videos that demonstrate programming concepts
     const sampleVideos = [
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", // Interactive Coding Demo
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", // Visual Programming for Kids
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4", // Student Success Stories
+      "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4" // Robotics & AI Learning
     ];
     
     // Use title hash to consistently assign same video to same title
