@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Clock, 
   Calendar, 
@@ -14,12 +19,27 @@ import {
   GraduationCap,
   Target,
   FileText,
-  Presentation
+  Presentation,
+  X
 } from "lucide-react";
 import { useMarket } from "@/contexts/MarketContext";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProfessionalDevelopmentPrograms() {
   const { market } = useMarket();
+  const { toast } = useToast();
+  const [showEnrollmentForm, setShowEnrollmentForm] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    school: '',
+    role: '',
+    experience: '',
+    program: '',
+    motivation: ''
+  });
 
   const getGradingSystem = () => {
     if (market === 'zimbabwe') {
@@ -47,6 +67,51 @@ export default function ProfessionalDevelopmentPrograms() {
   };
 
   const gradingSystem = getGradingSystem();
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleEnrollmentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.role) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Simulate form submission
+    toast({
+      title: "Enrollment Submitted!",
+      description: "Thank you for your interest. We'll contact you within 2 business days to discuss next steps.",
+    });
+
+    // Reset form and close modal
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      school: '',
+      role: '',
+      experience: '',
+      program: '',
+      motivation: ''
+    });
+    setShowEnrollmentForm(false);
+  };
+
+  const openEnrollmentForm = (selectedProgram?: string) => {
+    if (selectedProgram) {
+      setFormData(prev => ({ ...prev, program: selectedProgram }));
+    }
+    setShowEnrollmentForm(true);
+  };
 
   const programs = [
     {
@@ -118,7 +183,7 @@ export default function ProfessionalDevelopmentPrograms() {
               <Button 
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold"
-                onClick={() => window.location.href = '/signup'}
+                onClick={() => openEnrollmentForm()}
                 data-testid="button-enroll-program"
               >
                 Enroll in Program
@@ -267,7 +332,7 @@ export default function ProfessionalDevelopmentPrograms() {
 
                       <Button 
                         className="w-full" 
-                        onClick={() => window.location.href = '/signup'}
+                        onClick={() => openEnrollmentForm(program.level)}
                         data-testid={`button-enroll-${index}`}
                       >
                         Enroll Now <ChevronRight className="w-4 h-4 ml-2" />
@@ -370,6 +435,7 @@ export default function ProfessionalDevelopmentPrograms() {
             <Button 
               size="lg"
               className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold"
+              onClick={() => openEnrollmentForm()}
               data-testid="button-start-enrollment"
             >
               Start Enrollment Process
@@ -385,6 +451,169 @@ export default function ProfessionalDevelopmentPrograms() {
           </div>
         </div>
       </section>
+
+      {/* Custom Enrollment Form Modal */}
+      {showEnrollmentForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-2xl">Program Enrollment Application</CardTitle>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setShowEnrollmentForm(false)}
+                data-testid="button-close-enrollment"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleEnrollmentSubmit} className="space-y-6">
+                {/* Personal Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Personal Information</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="firstName">First Name *</Label>
+                      <Input
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={(e) => handleInputChange('firstName', e.target.value)}
+                        required
+                        data-testid="input-first-name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName">Last Name *</Label>
+                      <Input
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={(e) => handleInputChange('lastName', e.target.value)}
+                        required
+                        data-testid="input-last-name"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="email">Email Address *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      required
+                      data-testid="input-email"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="phone">Phone Number</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      data-testid="input-phone"
+                    />
+                  </div>
+                </div>
+
+                {/* Professional Information */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Professional Information</h3>
+                  <div>
+                    <Label htmlFor="school">School/Institution</Label>
+                    <Input
+                      id="school"
+                      value={formData.school}
+                      onChange={(e) => handleInputChange('school', e.target.value)}
+                      data-testid="input-school"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="role">Current Role *</Label>
+                    <Select value={formData.role} onValueChange={(value) => handleInputChange('role', value)}>
+                      <SelectTrigger data-testid="select-role">
+                        <SelectValue placeholder="Select your current role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="teacher">Teacher</SelectItem>
+                        <SelectItem value="principal">Principal</SelectItem>
+                        <SelectItem value="head-of-department">Head of Department</SelectItem>
+                        <SelectItem value="curriculum-specialist">Curriculum Specialist</SelectItem>
+                        <SelectItem value="administrator">Administrator</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="experience">Teaching Experience</Label>
+                    <Select value={formData.experience} onValueChange={(value) => handleInputChange('experience', value)}>
+                      <SelectTrigger data-testid="select-experience">
+                        <SelectValue placeholder="Select your teaching experience" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0-2">0-2 years</SelectItem>
+                        <SelectItem value="3-5">3-5 years</SelectItem>
+                        <SelectItem value="6-10">6-10 years</SelectItem>
+                        <SelectItem value="11-15">11-15 years</SelectItem>
+                        <SelectItem value="16+">16+ years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Program Selection */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Program Selection</h3>
+                  <div>
+                    <Label htmlFor="program">Preferred Program</Label>
+                    <Select value={formData.program} onValueChange={(value) => handleInputChange('program', value)}>
+                      <SelectTrigger data-testid="select-program">
+                        <SelectValue placeholder="Select a program" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Foundation Certificate Program">Foundation Certificate Program</SelectItem>
+                        <SelectItem value="Advanced Diploma Program">Advanced Diploma Program</SelectItem>
+                        <SelectItem value="Master Educator Program">Master Educator Program</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="motivation">Why are you interested in this program?</Label>
+                    <Textarea
+                      id="motivation"
+                      value={formData.motivation}
+                      onChange={(e) => handleInputChange('motivation', e.target.value)}
+                      placeholder="Tell us about your motivation and goals..."
+                      rows={4}
+                      data-testid="textarea-motivation"
+                    />
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <div className="flex gap-4">
+                  <Button 
+                    type="submit" 
+                    className="flex-1"
+                    data-testid="button-submit-enrollment"
+                  >
+                    Submit Application
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setShowEnrollmentForm(false)}
+                    data-testid="button-cancel-enrollment"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
