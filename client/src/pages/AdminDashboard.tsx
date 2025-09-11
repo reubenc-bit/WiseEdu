@@ -354,7 +354,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <Globe className="w-4 h-4 text-primary mr-2" />
-                      <span className="text-sm">🇿🇦 South Africa</span>
+                      <span className="text-sm">South Africa</span>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">68%</p>
@@ -365,7 +365,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <Globe className="w-4 h-4 text-secondary mr-2" />
-                      <span className="text-sm">🇿🇼 Zimbabwe</span>
+                      <span className="text-sm">Zimbabwe</span>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">32%</p>

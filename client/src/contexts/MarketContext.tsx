@@ -28,7 +28,7 @@ export function MarketProvider({ children }: { children: ReactNode }) {
   };
 
   const getMarketLabel = (market: Market) => {
-    return market === 'zimbabwe' ? '🇿🇼 Zimbabwe' : '🇿🇦 South Africa';
+    return market === 'zimbabwe' ? 'Zimbabwe' : 'South Africa';
   };
 
   const getCurriculumText = () => {

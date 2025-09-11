@@ -92,10 +92,10 @@ export function PublicHeader() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="south-africa" data-testid="option-south-africa">
-                    🇿🇦 South Africa
+                    South Africa
                   </SelectItem>
                   <SelectItem value="zimbabwe" data-testid="option-zimbabwe">
-                    🇿🇼 Zimbabwe
+                    Zimbabwe
                   </SelectItem>
                 </SelectContent>
               </Select>

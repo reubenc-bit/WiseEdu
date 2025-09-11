@@ -76,10 +76,10 @@ export function ProtectedHeader() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="south-africa" data-testid="option-south-africa">
-                  🇿🇦 South Africa
+                  South Africa
                 </SelectItem>
                 <SelectItem value="zimbabwe" data-testid="option-zimbabwe">
-                  🇿🇼 Zimbabwe
+                  Zimbabwe
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -90,7 +90,7 @@ export function ProtectedHeader() {
                 <Button variant="ghost" className="flex items-center space-x-2" data-testid="button-user-menu">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={user?.profileImageUrl || undefined} />
-                    <AvatarFallback>{getInitials(user?.firstName, user?.lastName)}</AvatarFallback>
+                    <AvatarFallback>{getInitials(user?.firstName || undefined, user?.lastName || undefined)}</AvatarFallback>
                   </Avatar>
                   <span className="hidden sm:block text-sm font-medium">{getDisplayName()}</span>
                 </Button>

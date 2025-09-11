@@ -430,10 +430,10 @@ export default function SignUp() {
         {/* Educational Notice */}
         <div className="mt-6 text-center space-y-2">
           <p className="text-xs text-muted-foreground">
-            🌍 Serving educational institutions in {market === 'zimbabwe' ? 'Zimbabwe' : 'South Africa'}
+            Serving educational institutions in {market === 'zimbabwe' ? 'Zimbabwe' : 'South Africa'}
           </p>
           <p className="text-xs text-muted-foreground">
-            🔒 Safe, secure, and curriculum-aligned learning environment
+            Safe, secure, and curriculum-aligned learning environment
           </p>
         </div>
       </div>
