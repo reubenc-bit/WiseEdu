@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLocation } from "wouter";
 import { 
   Users, 
   Presentation, 
@@ -14,6 +15,8 @@ import {
 } from "lucide-react";
 
 export default function TeacherResources() {
+  const [location, setLocation] = useLocation();
+
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
@@ -30,7 +33,7 @@ export default function TeacherResources() {
               <Button 
                 size="lg"
                 className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold"
-                onClick={() => window.location.href = '/professional-development'}
+                onClick={() => setLocation('/professional-development')}
                 data-testid="button-join-training"
               >
                 Join Training Program
@@ -39,6 +42,7 @@ export default function TeacherResources() {
                 variant="outline"
                 size="lg"
                 className="bg-secondary/10 hover:bg-secondary/20 text-primary-foreground border-primary-foreground/20 px-8 py-4 text-lg font-semibold"
+                onClick={() => setLocation('/contact')}
                 data-testid="button-schedule-demo"
               >
                 Schedule Demo
@@ -100,16 +104,27 @@ export default function TeacherResources() {
               </div>
               
               <div className="mt-8">
-                <Button size="lg" className="mr-4" data-testid="button-start-certification">
+                <Button 
+                  size="lg" 
+                  className="mr-4" 
+                  onClick={() => setLocation('/professional-development')}
+                  data-testid="button-start-certification"
+                >
                   Start Certification
                 </Button>
-                <Button variant="outline" size="lg" className="mr-4" data-testid="button-learn-more">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="mr-4" 
+                  onClick={() => setLocation('/professional-development')}
+                  data-testid="button-learn-more"
+                >
                   Learn More
                 </Button>
                 <Button 
                   size="lg" 
                   className="bg-secondary hover:bg-secondary/90"
-                  onClick={() => window.location.href = '/professional-development'}
+                  onClick={() => setLocation('/professional-development')}
                   data-testid="button-professional-development"
                 >
                   Professional Development Programs
@@ -284,7 +299,7 @@ export default function TeacherResources() {
                 </div>
                 <Button 
                   className="w-full" 
-                  onClick={() => window.location.href = '/professional-development'}
+                  onClick={() => setLocation('/professional-development')}
                   data-testid="button-basic-cert"
                 >
                   Get Certified
@@ -318,7 +333,7 @@ export default function TeacherResources() {
                 </div>
                 <Button 
                   className="w-full" 
-                  onClick={() => window.location.href = '/professional-development'}
+                  onClick={() => setLocation('/professional-development')}
                   data-testid="button-advanced-cert"
                 >
                   Get Certified
@@ -351,7 +366,7 @@ export default function TeacherResources() {
                 </div>
                 <Button 
                   className="w-full" 
-                  onClick={() => window.location.href = '/professional-development'}
+                  onClick={() => setLocation('/professional-development')}
                   data-testid="button-specialist-cert"
                 >
                   Get Certified
@@ -373,6 +388,7 @@ export default function TeacherResources() {
             <Button 
               size="lg"
               className="bg-accent hover:bg-accent/90 text-accent-foreground px-8 py-4 text-lg font-semibold"
+              onClick={() => setLocation('/professional-development')}
               data-testid="button-start-training-cta"
             >
               Start Training Program
@@ -381,6 +397,7 @@ export default function TeacherResources() {
               variant="outline"
               size="lg"
               className="border-primary-foreground/20 hover:bg-primary-foreground/10 text-primary-foreground px-8 py-4 text-lg font-semibold"
+              onClick={() => setLocation('/contact')}
               data-testid="button-contact-us"
             >
               Contact Us

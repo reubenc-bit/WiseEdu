@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { LogIn, ArrowLeft, Shield, Users, GraduationCap, Eye, EyeOff } from "lucide-react";
 import { Link, useLocation } from "wouter";
+import { queryClient } from "@/lib/queryClient";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,8 +51,29 @@ export default function SignIn() {
         });
         
         setFormData({ email: '', password: '' });
-        setTimeout(() => {
-          window.location.href = '/';
+        
+        // Invalidate auth queries and redirect based on user role
+        setTimeout(async () => {
+          queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+          
+          const userData = await response.json();
+          const user = userData.user;
+          
+          // Role-based redirect
+          switch (user?.role) {
+            case 'teacher':
+              setLocation('/');
+              break;
+            case 'parent':
+              setLocation('/');
+              break;
+            case 'admin':
+              setLocation('/');
+              break;
+            default:
+              setLocation('/'); // student dashboard
+              break;
+          }
         }, 1000);
       } else {
         const error = await response.json();

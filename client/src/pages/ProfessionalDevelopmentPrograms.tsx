@@ -24,10 +24,12 @@ import {
 } from "lucide-react";
 import { useMarket } from "@/contexts/MarketContext";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 
 export default function ProfessionalDevelopmentPrograms() {
   const { market } = useMarket();
   const { toast } = useToast();
+  const [location, setLocation] = useLocation();
   const [showEnrollmentForm, setShowEnrollmentForm] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -88,7 +90,7 @@ export default function ProfessionalDevelopmentPrograms() {
     // Simulate form submission
     toast({
       title: "Enrollment Submitted!",
-      description: "Thank you for your interest. We'll contact you within 2 business days to discuss next steps.",
+      description: "Welcome to the training program! Redirecting to your dashboard.",
     });
 
     // Reset form and close modal
@@ -104,6 +106,11 @@ export default function ProfessionalDevelopmentPrograms() {
       motivation: ''
     });
     setShowEnrollmentForm(false);
+
+    // Redirect to educator training dashboard after successful enrollment
+    setTimeout(() => {
+      setLocation('/educator-training');
+    }, 2000);
   };
 
   const openEnrollmentForm = (selectedProgram?: string) => {

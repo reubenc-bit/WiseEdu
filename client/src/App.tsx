@@ -17,6 +17,7 @@ import Courses from "@/pages/Courses";
 import CoursesPage from "@/pages/CoursesPage";
 import TeacherResources from "@/pages/TeacherResources";
 import ProfessionalDevelopmentPrograms from "@/pages/ProfessionalDevelopmentPrograms";
+import EducatorTrainingDashboard from "@/pages/EducatorTrainingDashboard";
 import CodingHub from "@/pages/CodingHub";
 import Contact from "@/pages/Contact";
 import SignIn from "@/pages/SignIn";
@@ -59,6 +60,9 @@ function Router() {
       <Route path="/signup" component={SignUp} />
 
       {/* Protected routes - only accessible when authenticated */}
+      <Route path="/educator-training">
+        {isAuthenticated ? <EducatorTrainingDashboard /> : <Landing />}
+      </Route>
       <Route path="/dashboard/courses">
         {isAuthenticated ? <Courses /> : <Landing />}
       </Route>
