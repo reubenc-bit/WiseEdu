@@ -31,7 +31,8 @@ import {
   Award,
   MessageSquare,
   PlayCircle,
-  PauseCircle
+  PauseCircle,
+  Trophy
 } from "lucide-react";
 
 interface PlatformAnalyticsModalProps {
