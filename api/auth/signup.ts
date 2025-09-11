@@ -27,9 +27,12 @@ export default async function handler(req: any, res: any) {
     // Direct SQL connection (no schema imports)
     const sql = neon(process.env.DATABASE_URL!);
     
-    // Check if user exists
+    // Set search path and check database info
+    await sql`SET search_path TO public`;
+    
+    // Check if user exists (with schema qualification)
     const existingUsers = await sql`
-      SELECT id FROM users WHERE email = ${email}
+      SELECT id FROM public.users WHERE email = ${email}
     `;
     
     if (existingUsers.length > 0) {
@@ -39,9 +42,9 @@ export default async function handler(req: any, res: any) {
     // Hash password
     const hashedPassword = await bcryptjs.hash(password, 12);
 
-    // Insert user
+    // Insert user (with schema qualification)
     const newUsers = await sql`
-      INSERT INTO users (email, password, first_name, last_name, role, market)
+      INSERT INTO public.users (email, password, first_name, last_name, role, market)
       VALUES (${email}, ${hashedPassword}, ${firstName}, ${lastName}, ${role}::user_role, ${market}::market)
       RETURNING id, email, first_name, last_name, role, market, created_at
     `;

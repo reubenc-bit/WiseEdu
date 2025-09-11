@@ -27,10 +27,12 @@ export default async function handler(req: any, res: any) {
     // Direct SQL connection (no schema imports)
     const sql = neon(process.env.DATABASE_URL!);
     
-    // Find user
+    // Set search path and find user (with schema qualification)
+    await sql`SET search_path TO public`;
+    
     const users = await sql`
       SELECT id, email, password, first_name, last_name, role, market, created_at 
-      FROM users WHERE email = ${email}
+      FROM public.users WHERE email = ${email}
     `;
     
     if (users.length === 0) {
