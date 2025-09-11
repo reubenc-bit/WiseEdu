@@ -75,17 +75,23 @@ async function initializeApp() {
   }
 }
 
+// Export initialization function for use in API handlers
+export { initializeApp };
+
 // For Vercel serverless functions
 if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
   let appPromise: Promise<any>;
   
-  module.exports = async (req: any, res: any) => {
+  const handler = async (req: any, res: any) => {
     if (!appPromise) {
       appPromise = initializeApp();
     }
     const app = await appPromise;
     return app(req, res);
   };
+  
+  module.exports = handler;
+  module.exports.default = handler;
 } else {
   // For local development
   initializeApp();
