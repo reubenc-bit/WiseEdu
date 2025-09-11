@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,12 +21,26 @@ import {
   Clock,
   UserCheck,
   GraduationCap,
-  Globe
+  Globe,
+  Activity,
+  FileText
 } from "lucide-react";
+
+// Import embedded applications
+import { UserManagementPanel } from "@/components/UserManagementPanel";
+import { PlatformAnalyticsModal } from "@/components/PlatformAnalyticsModal";
+import { ContentManagementModal } from "@/components/ContentManagementModal";
+import { SystemHealthModal } from "@/components/SystemHealthModal";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Modal state management
+  const [userManagementOpen, setUserManagementOpen] = useState(false);
+  const [platformAnalyticsOpen, setPlatformAnalyticsOpen] = useState(false);
+  const [contentManagementOpen, setContentManagementOpen] = useState(false);
+  const [systemHealthOpen, setSystemHealthOpen] = useState(false);
 
   // Redirect if not an admin
   useEffect(() => {
@@ -299,19 +313,21 @@ export default function AdminDashboard() {
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-primary/5 hover:bg-primary/10"
+                    onClick={() => setUserManagementOpen(true)}
                     data-testid="button-manage-users"
                   >
                     <Users className="w-4 h-4 mr-2 text-primary" />
-                    Manage Users
+                    User Management
                   </Button>
                   
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-secondary/5 hover:bg-secondary/10"
+                    onClick={() => setContentManagementOpen(true)}
                     data-testid="button-course-management"
                   >
-                    <BookOpen className="w-4 h-4 mr-2 text-secondary" />
-                    Course Management
+                    <FileText className="w-4 h-4 mr-2 text-secondary" />
+                    Content Management
                   </Button>
                   
                   <Button 
@@ -326,19 +342,21 @@ export default function AdminDashboard() {
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-muted/5 hover:bg-muted/10"
+                    onClick={() => setPlatformAnalyticsOpen(true)}
                     data-testid="button-analytics"
                   >
                     <BarChart3 className="w-4 h-4 mr-2 text-muted-foreground" />
-                    Analytics & Reports
+                    Platform Analytics
                   </Button>
 
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-red-50 hover:bg-red-100 text-red-700"
+                    onClick={() => setSystemHealthOpen(true)}
                     data-testid="button-system-settings"
                   >
-                    <Settings className="w-4 h-4 mr-2" />
-                    System Settings
+                    <Activity className="w-4 h-4 mr-2" />
+                    System Health
                   </Button>
                 </div>
               </CardContent>
@@ -417,6 +435,24 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Embedded Applications */}
+      <UserManagementPanel 
+        isOpen={userManagementOpen} 
+        onClose={() => setUserManagementOpen(false)} 
+      />
+      <PlatformAnalyticsModal 
+        isOpen={platformAnalyticsOpen} 
+        onClose={() => setPlatformAnalyticsOpen(false)} 
+      />
+      <ContentManagementModal 
+        isOpen={contentManagementOpen} 
+        onClose={() => setContentManagementOpen(false)} 
+      />
+      <SystemHealthModal 
+        isOpen={systemHealthOpen} 
+        onClose={() => setSystemHealthOpen(false)} 
+      />
     </div>
   );
 }

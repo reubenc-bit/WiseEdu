@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import type { User, TeacherCertification } from '@shared/schema';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -16,12 +17,26 @@ import {
   Calendar,
   Target,
   TrendingUp,
-  Clock
+  Clock,
+  PenTool,
+  Video
 } from "lucide-react";
+
+// Import embedded applications
+import { GradeManagementModal } from "@/components/GradeManagementModal";
+import { StudentAnalyticsModal } from "@/components/StudentAnalyticsModal";
+import { LessonPlannerModal } from "@/components/LessonPlannerModal";
+import { LiveClassroomModal } from "@/components/LiveClassroomModal";
 
 export default function TeacherDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Modal state management
+  const [gradeManagementOpen, setGradeManagementOpen] = useState(false);
+  const [studentAnalyticsOpen, setStudentAnalyticsOpen] = useState(false);
+  const [lessonPlannerOpen, setLessonPlannerOpen] = useState(false);
+  const [liveClassroomOpen, setLiveClassroomOpen] = useState(false);
 
   // Redirect if not a teacher
   useEffect(() => {
@@ -35,7 +50,7 @@ export default function TeacherDashboard() {
   }, [user, toast]);
 
   // Fetch students
-  const { data: students, isLoading: studentsLoading } = useQuery({
+  const { data: students, isLoading: studentsLoading } = useQuery<User[]>({
     queryKey: ['/api/teacher/students'],
     retry: false,
     meta: {
@@ -55,7 +70,7 @@ export default function TeacherDashboard() {
   });
 
   // Fetch certifications
-  const { data: certifications, isLoading: certificationsLoading } = useQuery({
+  const { data: certifications, isLoading: certificationsLoading } = useQuery<TeacherCertification[]>({
     queryKey: ['/api/teacher/certifications'],
     retry: false,
   });
@@ -226,37 +241,41 @@ export default function TeacherDashboard() {
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-primary/5 hover:bg-primary/10"
+                    onClick={() => setGradeManagementOpen(true)}
                     data-testid="button-create-assignment"
                   >
-                    <FileText className="w-4 h-4 mr-2 text-primary" />
-                    Create Assignment
+                    <PenTool className="w-4 h-4 mr-2 text-primary" />
+                    Grade Management
                   </Button>
                   
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-secondary/5 hover:bg-secondary/10"
+                    onClick={() => setStudentAnalyticsOpen(true)}
                     data-testid="button-view-progress"
                   >
                     <BarChart3 className="w-4 h-4 mr-2 text-secondary" />
-                    Student Progress
+                    Student Analytics
                   </Button>
                   
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-accent/5 hover:bg-accent/10"
+                    onClick={() => setLessonPlannerOpen(true)}
                     data-testid="button-access-resources"
                   >
                     <BookOpen className="w-4 h-4 mr-2 text-accent" />
-                    Teaching Resources
+                    Lesson Planner
                   </Button>
 
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start bg-muted/5 hover:bg-muted/10"
+                    className="w-full justify-start bg-green-50 hover:bg-green-100 text-green-700"
+                    onClick={() => setLiveClassroomOpen(true)}
                     data-testid="button-schedule-class"
                   >
-                    <Calendar className="w-4 h-4 mr-2 text-muted-foreground" />
-                    Schedule Class
+                    <Video className="w-4 h-4 mr-2" />
+                    Live Classroom
                   </Button>
                 </div>
               </CardContent>
@@ -296,6 +315,24 @@ export default function TeacherDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Embedded Applications */}
+      <GradeManagementModal 
+        isOpen={gradeManagementOpen} 
+        onClose={() => setGradeManagementOpen(false)} 
+      />
+      <StudentAnalyticsModal 
+        isOpen={studentAnalyticsOpen} 
+        onClose={() => setStudentAnalyticsOpen(false)} 
+      />
+      <LessonPlannerModal 
+        isOpen={lessonPlannerOpen} 
+        onClose={() => setLessonPlannerOpen(false)} 
+      />
+      <LiveClassroomModal 
+        isOpen={liveClassroomOpen} 
+        onClose={() => setLiveClassroomOpen(false)} 
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import type { User } from '@shared/schema';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,12 +17,26 @@ import {
   Shield,
   FileText,
   Calendar,
-  Eye
+  Eye,
+  MessageSquare,
+  Activity
 } from "lucide-react";
+
+// Import embedded applications
+import { ChildProgressModal } from "@/components/ChildProgressModal";
+import { CommunicationHubModal } from "@/components/CommunicationHubModal";
+import { LearningReportsModal } from "@/components/LearningReportsModal";
+import { SafetyDashboardModal } from "@/components/SafetyDashboardModal";
 
 export default function ParentDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Modal state management
+  const [childProgressOpen, setChildProgressOpen] = useState(false);
+  const [communicationHubOpen, setCommunicationHubOpen] = useState(false);
+  const [learningReportsOpen, setLearningReportsOpen] = useState(false);
+  const [safetyDashboardOpen, setSafetyDashboardOpen] = useState(false);
 
   // Redirect if not a parent
   useEffect(() => {
@@ -35,7 +50,7 @@ export default function ParentDashboard() {
   }, [user, toast]);
 
   // Fetch children
-  const { data: children, isLoading: childrenLoading } = useQuery({
+  const { data: children, isLoading: childrenLoading } = useQuery<User[]>({
     queryKey: ['/api/parent/children'],
     retry: false,
     meta: {
@@ -282,37 +297,41 @@ export default function ParentDashboard() {
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-primary/5 hover:bg-primary/10"
+                    onClick={() => setChildProgressOpen(true)}
                     data-testid="button-view-detailed-progress"
                   >
                     <BarChart3 className="w-4 h-4 mr-2 text-primary" />
-                    View Detailed Progress
+                    Child Progress Analytics
                   </Button>
                   
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-secondary/5 hover:bg-secondary/10"
+                    onClick={() => setCommunicationHubOpen(true)}
                     data-testid="button-schedule-session"
                   >
-                    <Calendar className="w-4 h-4 mr-2 text-secondary" />
-                    Schedule Learning Session
+                    <MessageSquare className="w-4 h-4 mr-2 text-secondary" />
+                    Communication Hub
                   </Button>
                   
                   <Button 
                     variant="ghost" 
                     className="w-full justify-start bg-accent/5 hover:bg-accent/10"
+                    onClick={() => setSafetyDashboardOpen(true)}
                     data-testid="button-safety-settings"
                   >
                     <Shield className="w-4 h-4 mr-2 text-accent" />
-                    Safety Settings
+                    Safety Dashboard
                   </Button>
 
                   <Button 
                     variant="ghost" 
-                    className="w-full justify-start bg-muted/5 hover:bg-muted/10"
+                    className="w-full justify-start bg-green-50 hover:bg-green-100 text-green-700"
+                    onClick={() => setLearningReportsOpen(true)}
                     data-testid="button-contact-teacher"
                   >
-                    <Settings className="w-4 h-4 mr-2 text-muted-foreground" />
-                    Contact Teacher
+                    <Activity className="w-4 h-4 mr-2" />
+                    Learning Reports
                   </Button>
                 </div>
               </CardContent>
@@ -350,6 +369,24 @@ export default function ParentDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Embedded Applications */}
+      <ChildProgressModal 
+        isOpen={childProgressOpen} 
+        onClose={() => setChildProgressOpen(false)} 
+      />
+      <CommunicationHubModal 
+        isOpen={communicationHubOpen} 
+        onClose={() => setCommunicationHubOpen(false)} 
+      />
+      <LearningReportsModal 
+        isOpen={learningReportsOpen} 
+        onClose={() => setLearningReportsOpen(false)} 
+      />
+      <SafetyDashboardModal 
+        isOpen={safetyDashboardOpen} 
+        onClose={() => setSafetyDashboardOpen(false)} 
+      />
     </div>
   );
 }
