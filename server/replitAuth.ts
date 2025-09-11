@@ -85,6 +85,10 @@ async function upsertUser(
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
+    // Include role claim from OIDC, fallback to 'student' if not provided
+    role: claims["role"] || 'student',
+    // Include market claim from OIDC, fallback to 'south-africa' if not provided  
+    market: claims["market"] || 'south-africa',
   });
 }
 

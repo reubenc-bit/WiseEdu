@@ -52,29 +52,9 @@ export default function SignIn() {
         
         setFormData({ email: '', password: '' });
         
-        // Invalidate auth queries and redirect based on user role
-        setTimeout(async () => {
-          queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-          
-          const userData = await response.json();
-          const user = userData.user;
-          
-          // Role-based redirect
-          switch (user?.role) {
-            case 'teacher':
-              setLocation('/');
-              break;
-            case 'parent':
-              setLocation('/');
-              break;
-            case 'admin':
-              setLocation('/');
-              break;
-            default:
-              setLocation('/'); // student dashboard
-              break;
-          }
-        }, 1000);
+        // Invalidate auth queries and redirect to home for role-based routing
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+        setLocation('/');
       } else {
         const error = await response.json();
         toast({

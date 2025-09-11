@@ -48,7 +48,18 @@ function Router() {
     <Switch>
       {/* Home route - shows Landing page or role-based dashboard */}
       <Route path="/">
-        {isLoading || !isAuthenticated ? <Landing /> : <RoleDashboard user={user} />}
+        {isLoading ? (
+          <div className="flex items-center justify-center min-h-screen">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground">Loading your dashboard...</p>
+            </div>
+          </div>
+        ) : isAuthenticated ? (
+          <RoleDashboard user={user} />
+        ) : (
+          <Landing />
+        )}
       </Route>
 
       {/* Public routes - accessible without authentication */}
