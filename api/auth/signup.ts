@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -46,9 +47,20 @@ export default async function handler(req: any, res: any) {
       RETURNING id, email, first_name, last_name, role, market, created_at, updated_at
     `;
 
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET || 'fallback-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    // Set HTTP-only cookie for auth
+    res.setHeader('Set-Cookie', `auth-token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=Lax`);
+
     return res.status(201).json({ 
       message: "User created successfully", 
-      user: user 
+      user: user,
+      token: token
     });
 
   } catch (error) {

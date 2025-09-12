@@ -15,8 +15,9 @@ export default async function handler(req: any, res: any) {
       return res.status(405).json({ message: 'Method not allowed' });
     }
 
-    // For serverless functions, we don't have sessions to destroy
-    // Just return success for now
+    // Clear the auth token cookie
+    res.setHeader('Set-Cookie', 'auth-token=; HttpOnly; Path=/; Max-Age=0; SameSite=Lax');
+    
     return res.status(200).json({ message: "Logged out successfully" });
 
   } catch (error) {

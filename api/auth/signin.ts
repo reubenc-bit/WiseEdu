@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export default async function handler(req: any, res: any) {
   try {
@@ -46,11 +47,23 @@ export default async function handler(req: any, res: any) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Return sanitized user data without password
+    // Create JWT token
+    const token = jwt.sign(
+      { userId: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET || 'fallback-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    // Return sanitized user data without password and include token
     const { password: _, ...sanitizedUser } = user;
+    
+    // Set HTTP-only cookie for auth
+    res.setHeader('Set-Cookie', `auth-token=${token}; HttpOnly; Path=/; Max-Age=86400; SameSite=Lax`);
+    
     return res.status(200).json({ 
       message: "Signed in successfully", 
-      user: sanitizedUser 
+      user: sanitizedUser,
+      token: token
     });
 
   } catch (error) {
