@@ -1,0 +1,14 @@
+HTTP/2 401 
+access-control-allow-headers: Content-Type
+access-control-allow-methods: POST, OPTIONS
+access-control-allow-origin: *
+cache-control: public, max-age=0, must-revalidate
+content-type: application/json; charset=utf-8
+date: Fri, 12 Sep 2025 13:51:21 GMT
+etag: W/"27-Mm37A2ls1bgL0/D8e3MSpDLbow8"
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-vercel-cache: MISS
+x-vercel-id: sfo1::iad1::4qcjd-1757685080333-4c9ebbca9fc2
+content-length: 39
+
