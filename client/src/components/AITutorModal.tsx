@@ -14,7 +14,7 @@ interface ChatMessage {
   timestamp: Date;
   codeSnippet?: string;
   suggestion?: {
-    type: 'fix' | 'optimize' | 'explain';
+    type: 'explain' | 'practice' | 'fix' | 'project';
     title: string;
     description: string;
     code?: string;
@@ -70,77 +70,43 @@ export function AITutorModal({ isOpen, onClose }: AITutorModalProps) {
   };
 
   const generateAIResponse = async (userMessage: string): Promise<ChatMessage> => {
-    // Simulate AI processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+    try {
+      // Call the real AI tutor API
+      const response = await fetch('/api/ai-tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userMessage,
+          isLittleCoder,
+          tutorMode,
+          context: JSON.stringify(learningContext)
+        }),
+      });
 
-    const lowercaseMessage = userMessage.toLowerCase();
-
-    // Advanced tutoring responses based on context
-    let response = '';
-    let suggestion = undefined;
-
-    if (lowercaseMessage.includes('error') || lowercaseMessage.includes('bug') || lowercaseMessage.includes('not working')) {
-      response = isLittleCoder
-        ? "Oh no! Don't worry, every coder gets bugs - they're like puzzles to solve! Can you show me your code? I'll help you find what's wrong and fix it together!"
-        : "I'd be happy to help debug your code. Please share the error message and your code snippet. I'll analyze it and provide specific solutions along with explanations of what went wrong.";
-
-      suggestion = {
-        type: 'fix' as const,
-        title: 'Debug Together',
-        description: 'Share your code and I\'ll help identify and fix the issue',
-        code: '// Paste your code here and I\'ll help debug it'
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: data.response.message,
+          timestamp: new Date(),
+          suggestion: data.response.suggestion
+        };
+      } else {
+        throw new Error('AI tutor service unavailable');
+      }
+    } catch (error) {
+      console.error('AI Tutor Error:', error);
+      // Fallback to basic response
+      return {
+        id: Date.now().toString(),
+        role: 'assistant', 
+        content: isLittleCoder 
+          ? "I'm having trouble right now, but I still want to help! Can you try asking again?"
+          : "I'm experiencing some technical difficulties. Please try again, and I'll help you with your coding question.",
+        timestamp: new Date()
       };
-    } else if (lowercaseMessage.includes('loop') || lowercaseMessage.includes('repeat')) {
-      response = isLittleCoder
-        ? "Loops are super cool! They're like telling the computer 'do this again and again!' Think of it like brushing your teeth every morning - you repeat the same steps. Want to see some fun loop examples?"
-        : "Loops are fundamental control structures that allow you to execute code repeatedly. Let me explain the different types of loops and when to use each one. Would you like to see practical examples?";
-
-      suggestion = {
-        type: 'explain' as const,
-        title: 'Loop Practice',
-        description: 'Try this interactive loop exercise',
-        code: isLittleCoder
-          ? 'for i in range(5):\n    print("Hello!", i)'
-          : 'for (let i = 0; i < 10; i++) {\n    console.log(`Count: ${i}`);\n}'
-      };
-    } else if (lowercaseMessage.includes('function') || lowercaseMessage.includes('method')) {
-      response = isLittleCoder
-        ? "Functions are like magic spells! You give them a name, and when you say the name, they do something special. It's like having a robot helper that knows exactly what to do!"
-        : "Functions are reusable blocks of code that perform specific tasks. They help organize your code, reduce repetition, and make programs more maintainable. Let me show you how to create effective functions.";
-
-      suggestion = {
-        type: 'explain' as const,
-        title: 'Function Workshop',
-        description: 'Learn to create and use functions effectively',
-        code: isLittleCoder
-          ? 'def say_hello(name):\n    print(f"Hello, {name}!")\n\nsay_hello("Friend")'
-          : 'function calculateArea(length, width) {\n    return length * width;\n}\n\nconst area = calculateArea(5, 3);'
-      };
-    } else if (lowercaseMessage.includes('variable') || lowercaseMessage.includes('store')) {
-      response = isLittleCoder
-        ? "Variables are like magical boxes! You can put numbers, words, or anything inside them and use them later. Each box has a name so you remember what's inside!"
-        : "Variables are containers that store data values. Understanding variable scope, types, and naming conventions is crucial for writing clean, maintainable code. Let me explain the best practices.";
-    } else if (lowercaseMessage.includes('array') || lowercaseMessage.includes('list')) {
-      response = isLittleCoder
-        ? "Arrays are like toy boxes with numbered spots! You can put lots of things in order and find them by their number. Want to see how to make your own toy box?"
-        : "Arrays are data structures that store multiple elements in a single variable. They're essential for handling collections of data efficiently. Let me show you array methods and best practices.";
-    } else if (lowercaseMessage.includes('help') || lowercaseMessage.includes('stuck')) {
-      response = isLittleCoder
-        ? "Don't worry! Getting stuck is part of learning - even the best coders get stuck sometimes! Tell me what you're working on and I'll help you figure it out step by step!"
-        : "I'm here to help! Getting stuck is a normal part of programming. Can you describe the specific challenge you're facing? I'll provide targeted guidance and break it down into manageable steps.";
-    } else {
-      response = isLittleCoder
-        ? "That's a great question! I love helping curious coders like you! Can you tell me more about what you're trying to do? The more you tell me, the better I can help!"
-        : "I'd be happy to help with that! Could you provide more context about your specific programming challenge or learning goal? This will help me give you the most relevant and useful guidance.";
     }
-
-    return {
-      id: Date.now().toString(),
-      role: 'assistant',
-      content: response,
-      timestamp: new Date(),
-      suggestion
-    };
   };
 
   const handleSendMessage = async () => {

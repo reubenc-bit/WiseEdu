@@ -32,7 +32,7 @@ export default function StudentDashboard({ onCodingLabOpen }: StudentDashboardPr
   const [showVideoCall, setShowVideoCall] = useState(false);
   const [showDeviceConnector, setShowDeviceConnector] = useState(false);
   const [showRoboticsLab, setShowRoboticsLab] = useState(false);
-  const [selectedRoboticsActivity, setSelectedRoboticsActivity] = useState<typeof roboticsActivities[0] | null>(null);
+  const [selectedRoboticsActivity, setSelectedRoboticsActivity] = useState<any>(null);
 
   // TODO: Implement proper age group determination based on user preferences or enrollment data
   // For now, defaulting to older students (12-17) as a reasonable fallback
