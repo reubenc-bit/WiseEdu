@@ -34,12 +34,32 @@ export async function generateAITutorResponse(
 
 Please respond with helpful guidance and optionally suggest a follow-up activity. Keep responses concise but informative.`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-5", // the newest OpenAI model is "gpt-5" which was released August 7, 2025
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 400,
-      temperature: 0.7,
-    });
+    // Try GPT-5 first, fallback to GPT-4o if not available
+    let model = "gpt-5"; // the newest OpenAI model is "gpt-5" which was released August 7, 2025
+    let response;
+    
+    try {
+      response = await openai.chat.completions.create({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 400,
+        temperature: 0.7,
+      });
+    } catch (modelError: any) {
+      // If GPT-5 is not available, fallback to GPT-4o
+      if (modelError.status === 404 || modelError.message?.includes('model')) {
+        console.log('GPT-5 not available, falling back to GPT-4o');
+        model = "gpt-4o";
+        response = await openai.chat.completions.create({
+          model,
+          messages: [{ role: "user", content: prompt }],
+          max_tokens: 400,
+          temperature: 0.7,
+        });
+      } else {
+        throw modelError;
+      }
+    }
 
     const aiMessage = response.choices[0].message.content || "I'm here to help with your coding questions!";
 
@@ -73,10 +93,17 @@ Please respond with helpful guidance and optionally suggest a follow-up activity
   } catch (error) {
     console.error('OpenAI API Error:', error);
     
-    // Fallback response
-    const fallbackResponse = isLittleCoder
-      ? "Oops! I'm having trouble thinking right now. Can you ask me again? I love helping with coding!"
-      : "I'm experiencing some technical difficulties right now. Please try your question again, and I'll do my best to help you with your coding challenge.";
+    // More specific error handling
+    let fallbackResponse;
+    if (error instanceof Error && error.message.includes('insufficient_quota')) {
+      fallbackResponse = isLittleCoder
+        ? "I'm taking a little break right now! But I still want to help you learn coding. Can you try asking me again in a few minutes?"
+        : "I'm currently experiencing high usage and need to take a brief pause. Please try your question again in a few minutes, and I'll be happy to help with your coding challenge!";
+    } else {
+      fallbackResponse = isLittleCoder
+        ? "Oops! I'm having trouble thinking right now. Can you ask me again? I love helping with coding!"
+        : "I'm experiencing some technical difficulties right now. Please try your question again, and I'll do my best to help you with your coding challenge.";
+    }
     
     return { message: fallbackResponse };
   }

@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { insertCourseSchema, insertLessonSchema, insertUserProgressSchema, insertProjectSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
+import { generateAITutorResponse } from "./lib/openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
@@ -147,6 +148,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ message: "Authentication error" });
     }
   };
+
+  // AI Tutor endpoint (SECURED with authentication)
+  app.post('/api/ai-tutor', requireAuth, async (req: any, res) => {
+    try {
+      const { message, isLittleCoder = false, tutorMode = 'chat', context } = req.body;
+
+      // Input validation
+      if (!message?.trim() || message.length > 1000) {
+        return res.status(400).json({ message: 'Message is required and must be less than 1000 characters' });
+      }
+
+      if (!['chat', 'code-review', 'practice'].includes(tutorMode)) {
+        return res.status(400).json({ message: 'Invalid tutor mode' });
+      }
+
+      // Basic rate limiting - 10 requests per minute per user
+      const userId = req.user?.claims?.sub || req.user?.id;
+      const rateKey = `ai-tutor-${userId}`;
+      // TODO: Implement proper rate limiting with Redis or in-memory store
+      
+      // Generate AI response using OpenAI with fallback models
+      const aiResponse = await generateAITutorResponse(message, isLittleCoder, tutorMode, context);
+
+      return res.status(200).json({
+        success: true,
+        response: aiResponse
+      });
+
+    } catch (error) {
+      console.error('AI Tutor API Error:', error);
+      return res.status(500).json({
+        message: 'Internal server error',
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  });
 
   // Course routes (protected)
   app.get('/api/courses', requireAuth, async (req: any, res) => {

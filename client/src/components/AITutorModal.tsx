@@ -38,9 +38,9 @@ export function AITutorModal({ isOpen, onClose }: AITutorModalProps) {
   const [tutorMode, setTutorMode] = useState<'chat' | 'code-review' | 'practice'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // TODO: Implement proper age group determination
-  // For now, defaulting to older students (12-17) as a reasonable fallback
-  const ageGroup: '6-11' | '12-17' = '12-17';
+  // TODO: Implement proper age group determination based on user preferences
+  // For now, using a more realistic default - most students are in the 12-17 range  
+  const ageGroup: '6-11' | '12-17' = '12-17'; // Default to older students for better UX
   const isLittleCoder = ageGroup === '6-11';
 
   useEffect(() => {

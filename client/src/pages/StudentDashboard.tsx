@@ -5,6 +5,7 @@ import { AITutorModal } from "@/components/AITutorModal";
 import { VideoConferenceModal } from "@/components/VideoConferenceModal";
 import { MicrobitDeviceConnector } from "@/components/MicrobitDeviceConnector";
 import { RoboticsLabModal } from "@/components/RoboticsLabModal";
+import { CodingEnvironment } from "@/components/CodingEnvironment";
 import { StudentLearningMaterials } from "@/components/StudentLearningMaterials";
 import { Code, Bot, Star, RotateCcw, Package, Sparkles, Bug, Palette, Gamepad2, Lightbulb, User, Trophy, Zap, Puzzle, Play, MapPin, Target } from "lucide-react";
 
@@ -32,12 +33,13 @@ export default function StudentDashboard({ onCodingLabOpen }: StudentDashboardPr
   const [showVideoCall, setShowVideoCall] = useState(false);
   const [showDeviceConnector, setShowDeviceConnector] = useState(false);
   const [showRoboticsLab, setShowRoboticsLab] = useState(false);
+  const [showCodingLab, setShowCodingLab] = useState(false);
   const [selectedRoboticsActivity, setSelectedRoboticsActivity] = useState<any>(null);
 
   // TODO: Implement proper age group determination based on user preferences or enrollment data
-  // For now, defaulting to older students (12-17) as a reasonable fallback
-  // This should be based on user's actual age group, not role
-  const ageGroup: '6-11' | '12-17' = '12-17'; // Default to older students
+  // For now, using a more realistic default - most students are in the 12-17 range
+  // This should be based on user's actual age or preferences, not role
+  const ageGroup: '6-11' | '12-17' = '12-17'; // Default to older students for better UX
   const isLittleCoder = ageGroup === '6-11';
 
   const sendAIMessage = () => {
@@ -110,6 +112,39 @@ export default function StudentDashboard({ onCodingLabOpen }: StudentDashboardPr
         onClose={() => setShowRoboticsLab(false)} 
         activity={selectedRoboticsActivity}
       />
+      
+      {/* Coding Lab Modal */}
+      {showCodingLab && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" data-testid="modal-coding-lab">
+          <div className="bg-white rounded-2xl max-w-7xl w-full mx-4 h-[90vh] flex flex-col overflow-hidden">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+              <div>
+                <h2 className="text-2xl font-bold">Coding Lab</h2>
+                <p className="text-blue-100">Interactive coding environment</p>
+              </div>
+              <button
+                onClick={() => setShowCodingLab(false)}
+                className="text-white hover:text-gray-200 transition-colors"
+                data-testid="button-close-coding-lab"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Coding Environment Content */}
+            <div className="flex-1 p-6 overflow-hidden">
+              <CodingEnvironment 
+                projectId="dashboard-project"
+                initialCode="# Welcome to CodewiseHub Coding Lab!\nprint('Hello, World!')\n\n# Start coding below:"
+                language="python"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Dashboard Header */}
       <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white py-8">
@@ -123,7 +158,7 @@ export default function StudentDashboard({ onCodingLabOpen }: StudentDashboardPr
             </div>
             <div className="flex space-x-3">
               <button
-                onClick={() => onCodingLabOpen && onCodingLabOpen()}
+                onClick={() => setShowCodingLab(true)}
                 className="bg-white text-pink-600 px-4 py-2 rounded-full font-bold hover:bg-gray-100 transition"
                 data-testid="button-coding-lab"
               >
